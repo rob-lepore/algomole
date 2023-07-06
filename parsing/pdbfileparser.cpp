@@ -1,0 +1,54 @@
+#include "pdbfileparser.h"
+#include <string>
+
+std::vector<am::bio::Atom> PdbFileParser::parse(std::string file, std::unordered_map<std::string, float> opts) {
+    std::string line;
+    std::vector<am::bio::Atom> atoms;
+
+    for (const auto& c : file) {
+        if (c != '\n') {
+            line += c;
+        }
+        else {
+            am::bio::Atom atom;
+            if (parseLine(line, &atom))
+                atoms.push_back(atom);
+            line.clear();
+
+        }
+    }
+    if (!line.empty()) {
+        am::bio::Atom atom;
+        if (parseLine(line, &atom))
+            atoms.push_back(atom);
+    }
+
+    Logger log("Parser");
+    log.log("# of atoms: " + std::to_string(atoms.size()));
+    return atoms;
+}
+
+bool PdbFileParser::parseLine(std::string line, am::bio::Atom* atom) {
+    if (line.substr(0, 4) == "ATOM") {
+
+        float X = std::stod(line.substr(31, 38));
+        float Y = std::stod(line.substr(40, 47));
+        float Z = std::stod(line.substr(47, 56));
+
+        //std::cout << X << " " << Y << " " << Z << "\n";
+        std::string element = line.substr(13, 2);
+        char e;
+        if (element == "Si") e = 'X';
+        if (element == "Al") e = 'Y';
+        else e = element[0];
+
+        atom->element = line[13];
+        atom->position = {
+            X, Y, Z
+        };
+        atom->radius = am::bio::vdwRadii.find(atom->element)->second;
+
+        return true;
+    }
+    return false;
+}
