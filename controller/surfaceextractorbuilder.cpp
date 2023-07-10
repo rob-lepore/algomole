@@ -4,8 +4,8 @@ SurfaceExtractorBuilder& SurfaceExtractorBuilder::setFileParser(FileParser* fp) 
 	m_parser = fp;
 	return *this;
 }
-SurfaceExtractorBuilder& SurfaceExtractorBuilder::setVolumeExtractor(SpaceFiller* ve) {
-	m_volumeExtractor = ve;
+SurfaceExtractorBuilder& SurfaceExtractorBuilder::SetSpaceFiller(SpaceFiller* sf) {
+	m_spacefiller = sf;
 	return *this;
 }
 SurfaceExtractorBuilder& SurfaceExtractorBuilder::setMeshBuilder(MeshBuilder* mb) {
@@ -24,6 +24,6 @@ SurfaceExtractorBuilder& SurfaceExtractorBuilder::setOption(std::string key, flo
 
 
 SurfaceExtractor SurfaceExtractorBuilder::build() {
-	SurfaceExtractor se(m_parser, m_pre, m_volumeExtractor, m_mesher, m_opts);
+	SurfaceExtractor se(m_parser, m_pre, m_spacefiller, m_mesher, m_opts);
 	return se;
 };

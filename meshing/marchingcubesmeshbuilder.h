@@ -3,11 +3,12 @@
 #include <random>
 #include <iostream>
 
+
 class MarchingCubesMeshBuilder : public MeshBuilder
 {
 public:
 
-    am::gfx::Mesh* buildMesh(mat3D grid, std::unordered_map<std::string, float> opts);
+    am::gfx::Mesh* buildMesh(am::Mat3D<byte> grid, std::unordered_map<std::string, float> opts);
 
 private:
 

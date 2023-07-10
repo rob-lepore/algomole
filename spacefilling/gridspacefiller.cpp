@@ -1,11 +1,11 @@
 #include "gridspacefiller.h"
 
-mat3D GridSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float> opts) {
+am::Mat3D<byte> GridSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float> opts) {
     float isize = opts["size"];
     float resolution = opts["resolution"];
 
     int size = std::floor( isize * resolution );
-    mat3D volume(size, std::vector<std::vector<byte>>(size, std::vector<byte>(size, 0)));
+    am::Mat3D<byte> volume(size, size, size, 0);
 
     glm::vec3 origin = glm::vec3(-size / 2);
 
@@ -28,7 +28,7 @@ mat3D GridSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unorde
                     }
                 }
 
-                volume[i][j][k] = match ? 1 : 0;
+                volume.at(i,j,k) = match ? 1 : 0;
 
 
             }

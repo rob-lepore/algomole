@@ -18,6 +18,7 @@ am::gfx::Mesh::Mesh() {
     this->vertices.clear();
     this->indices.clear();
     m_renderMode = GL_TRIANGLES;
+    
 }
 
 

@@ -7,7 +7,7 @@ class GridSpaceFiller : public SpaceFiller
 {
 public:
 
-	mat3D buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float> opts);
+	am::Mat3D<byte> buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float> opts);
 
 private:
 

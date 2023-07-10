@@ -15,7 +15,7 @@ public:
 
 private:
 	FileParser* m_fileParser;
-	SpaceFiller* m_volumeExtractor;
+	SpaceFiller* m_spacefiller;
 	MeshBuilder* m_mesher;
 	Preprocessing* m_pre;
 	std::unordered_map<std::string, float> m_opts;

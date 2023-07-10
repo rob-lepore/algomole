@@ -1,11 +1,12 @@
 #pragma once
 #include "../am.h"
+#include "../utils/mat3D.h"
 
 class SpaceFiller
 {
 public:
 
     SpaceFiller() { };
-    virtual mat3D buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float> opts) = 0;
+    virtual am::Mat3D<byte> buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float> opts) = 0;
 };
 

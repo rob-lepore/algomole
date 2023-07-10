@@ -1,6 +1,6 @@
 #include "marchingcubesmeshbuilder.h"
 
-am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(mat3D grid, std::unordered_map<std::string, float> opts) {
+am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<byte> grid, std::unordered_map<std::string, float> opts) {
     std::vector<am::gfx::Vertex> vertices;
     std::vector<unsigned> indices;
     std::vector<glm::vec3> normals;
@@ -13,7 +13,7 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(mat3D grid, std::unordered_ma
 
     int size = std::floor(isize * resolution);
 
-    std::vector<std::vector<std::vector<glm::vec4>>> normalMat(isize * 2, std::vector<std::vector<glm::vec4>>(isize * 2, std::vector<glm::vec4>(isize * 2, glm::vec4(0))));
+    am::Mat3D<glm::vec4> normalMat(isize*2, isize * 2, isize * 2, glm::vec4(0));
     glm::vec3 o = glm::vec3(-(isize * resolution) / 2);
 
     // Iterate over each cell in the grid
@@ -22,14 +22,14 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(mat3D grid, std::unordered_ma
             for (int z = 0; z < size - 1; ++z) {
                 // Determine the configuration index based on the voxel values
                 int configIndex = 0;
-                if (grid[x][y][z] == 0) configIndex |= 1;
-                if (grid[x + 1][y][z] == 0) configIndex |= 2;
-                if (grid[x + 1][y][z + 1] == 0) configIndex |= 4;
-                if (grid[x][y][z + 1] == 0) configIndex |= 8;
-                if (grid[x][y + 1][z] == 0) configIndex |= 16;
-                if (grid[x + 1][y + 1][z] == 0) configIndex |= 32;
-                if (grid[x + 1][y + 1][z + 1] == 0) configIndex |= 64;
-                if (grid[x][y + 1][z + 1] == 0) configIndex |= 128;
+                if (grid.at(x,y,z) == 0) configIndex |= 1;
+                if (grid.at(x+1, y, z) == 0) configIndex |= 2;
+                if (grid.at(x+1, y, z+1) == 0) configIndex |= 4;
+                if (grid.at(x, y, z+1) == 0) configIndex |= 8;
+                if (grid.at(x, y+1, z) == 0) configIndex |= 16;
+                if (grid.at(x + 1, y+1, z) == 0) configIndex |= 32;
+                if (grid.at(x + 1, y+1, z+1) == 0) configIndex |= 64;
+                if (grid.at(x, y+1, z+1) == 0) configIndex |= 128;
 
                 if (edgeTable[configIndex] == 0)
                     continue;
@@ -97,9 +97,9 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(mat3D grid, std::unordered_ma
                     glm::vec4 faceNormal = glm::vec4(glm::normalize(glm::cross((p2 - p1), (p3 - p1))), 1);
 
                     if (withNormals) {
-                        normalMat[(int)std::round((p1.x + (isize / 2.0f)) * 2.0f)][(int)std::round((p1.y + (isize / 2.0f)) * 2.0f)][(int)std::round((p1.z + (isize / 2.0f)) * 2.0f)] += faceNormal;
-                        normalMat[(int)std::round((p2.x + (isize / 2.0f)) * 2.0f)][(int)std::round((p2.y + (isize / 2.0f)) * 2.0f)][(int)std::round((p2.z + (isize / 2.0f)) * 2.0f)] += faceNormal;
-                        normalMat[(int)std::round((p3.x + (isize / 2.0f)) * 2.0f)][(int)std::round((p3.y + (isize / 2.0f)) * 2.0f)][(int)std::round((p3.z + (isize / 2.0f)) * 2.0f)] += faceNormal;
+                        normalMat.at((int)std::round((p1.x + (isize / 2.0f)) * 2.0f),(int)std::round((p1.y + (isize / 2.0f)) * 2.0f),(int)std::round((p1.z + (isize / 2.0f)) * 2.0f)) += faceNormal;
+                        normalMat.at((int)std::round((p2.x + (isize / 2.0f)) * 2.0f),(int)std::round((p2.y + (isize / 2.0f)) * 2.0f),(int)std::round((p2.z + (isize / 2.0f)) * 2.0f)) += faceNormal;
+                        normalMat.at((int)std::round((p3.x + (isize / 2.0f)) * 2.0f),(int)std::round((p3.y + (isize / 2.0f)) * 2.0f),(int)std::round((p3.z + (isize / 2.0f)) * 2.0f)) += faceNormal;
                     }
                     else {
                         normals.push_back(faceNormal);
@@ -115,7 +115,7 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(mat3D grid, std::unordered_ma
 
     if (withNormals) {
         for (am::gfx::Vertex v : vertices) {
-            glm::vec4 sum = normalMat[(int)std::round((v.position.x + (isize / 2.0f)) * 2.0f)][(int)std::round((v.position.y + (isize / 2.0f)) * 2.0f)][(int)std::round((v.position.z + (isize / 2.0f)) * 2.0f)];
+            glm::vec4 sum = normalMat.at((int)std::round((v.position.x + (isize / 2.0f)) * 2.0f),(int)std::round((v.position.y + (isize / 2.0f)) * 2.0f),(int)std::round((v.position.z + (isize / 2.0f)) * 2.0f));
             glm::vec3 normal = glm::vec3(sum) / sum.w;
             normals.push_back(glm::normalize(normal));
         }

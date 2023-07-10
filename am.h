@@ -12,9 +12,6 @@
 //typedef unsigned int GLenum;
 typedef unsigned char byte;
 
-
-typedef std::vector<std::vector<std::vector<byte>>> mat3D;
-
 namespace am{
     namespace bio {
 
@@ -47,7 +44,6 @@ namespace am{
 namespace am{
     namespace gfx {
         class Mesh;
-        class Camera;
         class ObjMeshVector;
 
         typedef struct {
