@@ -10,6 +10,8 @@ public:
 	SurfaceExtractorBuilder& setPreprocessing(Preprocessing* p);
 	SurfaceExtractorBuilder& SetSpaceFiller(SpaceFiller* sf);
 	SurfaceExtractorBuilder& setMeshBuilder(MeshBuilder* mb);
+	SurfaceExtractorBuilder& setPostprocessing(Postprocessing* p);
+
 	SurfaceExtractorBuilder& setOption(std::string key, float value);
 
 	SurfaceExtractor build();
@@ -20,6 +22,7 @@ private:
 	Preprocessing* m_pre;
 	SpaceFiller* m_spacefiller;
 	MeshBuilder* m_mesher;
+	Postprocessing* m_post;
 	std::unordered_map<std::string, float> m_opts;
 };
 
