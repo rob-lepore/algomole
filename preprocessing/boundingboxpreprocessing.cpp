@@ -35,7 +35,7 @@ std::vector<am::bio::Atom> BoundingBoxPreprocessing::transform(std::vector<am::b
 
 	std::vector<am::bio::Atom> scaled;
 	for (auto a : atoms) {
-		am::bio::Atom s = { (a.position - centroid) * scaleFactor, a.element, a.radius * scaleFactor };
+		am::bio::Atom s = { (a.position - centroid) * scaleFactor, a.element, a.radius * scaleFactor, a.chainId };
 		scaled.push_back(s);
 	}
 

@@ -25,18 +25,42 @@ namespace am{
         };
 
         const std::map<char, glm::vec4> colors{
-            {'C', {1,1,1,1}},
+            {'C', {0.15,0.4,0.3,1}},
             {'N', {0,0,1,1}},
             {'O', {1,0,0,1}},
             {'S', {1,1,0,1}},
-            {'X', {1,1,0,1}},
-            {'Y', {1,1,0,1}}
+        };
+
+        const std::map<char, glm::vec4> chainColors{
+            {'A', {0,1,0,1}},  //green
+            {'B', {0,0,1,1}},  //blue
+            {'C', {1,0,0,1}},  //red
+            {'D', {1,1,0,1}},  //yellow
+            {'E', {1,0,1,1}},  //magenta
+            {'F', {0,1,1,1}},  //cyan
+
         };
 
         typedef struct Atom {
             glm::vec3 position;
             char element;
             float radius;
+            char chainId;
+            Atom(glm::vec3 pos, char el, float r) {
+                position = pos;
+                element = el;
+                radius = r;
+                chainId = 0;
+            }
+            Atom(glm::vec3 pos, char el, float r, char chain) {
+                position = pos;
+                element = el;
+                radius = r;
+                chainId = chain;
+            }
+            Atom() {
+                Atom(glm::vec3(0), ' ', 0);
+            }
         } Atom;
     }
 }
@@ -46,9 +70,16 @@ namespace am{
         class Mesh;
         class ObjMeshVector;
 
-        typedef struct {
+        typedef struct Vertex {
             glm::vec4 position;
             glm::vec4 color;
+            glm::vec3 normal;
+
+            Vertex(glm::vec4 pos, glm::vec4 col) {
+                position = pos;
+                color = col;
+                normal = glm::vec3(0);
+            }
         } Vertex;
 
         typedef struct {

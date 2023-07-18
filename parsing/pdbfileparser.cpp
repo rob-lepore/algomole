@@ -37,6 +37,8 @@ bool PdbFileParser::parseLine(std::string line, am::bio::Atom* atom) {
 
         //std::cout << X << " " << Y << " " << Z << "\n";
         std::string element = line.substr(13, 2);
+        char chain = line[21];
+
         char e;
         if (element == "Si") e = 'X';
         if (element == "Al") e = 'Y';
@@ -47,7 +49,7 @@ bool PdbFileParser::parseLine(std::string line, am::bio::Atom* atom) {
             X, Y, Z
         };
         atom->radius = am::bio::vdwRadii.find(atom->element)->second;
-
+        atom->chainId = chain;
         return true;
     }
     return false;

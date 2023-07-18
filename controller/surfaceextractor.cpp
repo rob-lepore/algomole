@@ -1,6 +1,7 @@
 #include "surfaceextractor.h"
 #include "../gfx/mesh.h"
 #include "../utils/mat3D.h"
+#include <iostream>
 
 SurfaceExtractor::SurfaceExtractor(FileParser* fp, Preprocessing* p, SpaceFiller* sf, MeshBuilder* mb, Postprocessing* post, std::unordered_map<std::string, float> opts) {
 	m_fileParser = fp;
@@ -19,7 +20,7 @@ am::gfx::Mesh* SurfaceExtractor::generateSurfaceMesh(std::string file) {
     auto atoms = m_pre->transform(parsed, m_opts);
 
 	//step 2
-    am::Mat3D<byte> grid = m_spacefiller->buildVolume(atoms, m_opts);
+    am::Mat3D<am::bio::Atom> grid = m_spacefiller->buildVolume(atoms, m_opts);
 
 	//step 3
     am::gfx::Mesh* mesh = m_mesher->buildMesh(grid, m_opts);

@@ -8,7 +8,7 @@ class MarchingCubesMeshBuilder : public MeshBuilder
 {
 public:
 
-    am::gfx::Mesh* buildMesh(am::Mat3D<byte> grid, std::unordered_map<std::string, float> opts);
+    am::gfx::Mesh* buildMesh(am::Mat3D<am::bio::Atom>& grid, std::unordered_map<std::string, float> opts);
 
 private:
 
@@ -17,6 +17,7 @@ private:
 
     glm::vec3 interpolate(glm::vec3 first, glm::vec3 second, float, float);
     std::vector<int> reverse(int* arr);
+    glm::vec4 getColor(am::bio::Atom a, am::bio::Atom b, int colorMode);
 
 };
 

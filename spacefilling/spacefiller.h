@@ -7,6 +7,6 @@ class SpaceFiller
 public:
 
     SpaceFiller() { };
-    virtual am::Mat3D<byte> buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float> opts) = 0;
+    virtual am::Mat3D<am::bio::Atom> buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float> opts) = 0;
 };
 

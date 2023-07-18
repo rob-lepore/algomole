@@ -1,15 +1,15 @@
 #include "marchingcubesmeshbuilder.h"
 
-am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<byte> grid, std::unordered_map<std::string, float> opts) {
+am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::bio::Atom>& grid, std::unordered_map<std::string, float> opts) {
     std::vector<am::gfx::Vertex> vertices;
     std::vector<unsigned> indices;
     std::vector<glm::vec3> normals;
     unsigned i = 0;
-    glm::vec4 color = { 1,0,0,1 };
 
     float isize = opts["size"];
     float resolution = opts["resolution"];
     bool withNormals = opts["with_normals"] > 0;
+    int mode = opts["color_mode"];
 
     int size = std::floor(isize * resolution);
 
@@ -21,15 +21,16 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<byte> grid, std::un
         for (int y = 0; y < size - 1; ++y) {
             for (int z = 0; z < size - 1; ++z) {
                 // Determine the configuration index based on the voxel values
+                //std::cout << grid.at(x, y, z)->element << "\n";
                 int configIndex = 0;
-                if (grid.at(x,y,z) == 0) configIndex |= 1;
-                if (grid.at(x+1, y, z) == 0) configIndex |= 2;
-                if (grid.at(x+1, y, z+1) == 0) configIndex |= 4;
-                if (grid.at(x, y, z+1) == 0) configIndex |= 8;
-                if (grid.at(x, y+1, z) == 0) configIndex |= 16;
-                if (grid.at(x + 1, y+1, z) == 0) configIndex |= 32;
-                if (grid.at(x + 1, y+1, z+1) == 0) configIndex |= 64;
-                if (grid.at(x, y+1, z+1) == 0) configIndex |= 128;
+                if (grid.at(x,y,z).element == ' ') configIndex |= 1;
+                if (grid.at(x+1, y, z).element == ' ') configIndex |= 2;
+                if (grid.at(x+1, y, z+1).element == ' ') configIndex |= 4;
+                if (grid.at(x, y, z+1).element == ' ') configIndex |= 8;
+                if (grid.at(x, y+1, z).element == ' ') configIndex |= 16;
+                if (grid.at(x + 1, y+1, z).element == ' ') configIndex |= 32;
+                if (grid.at(x + 1, y+1, z+1).element == ' ') configIndex |= 64;
+                if (grid.at(x, y+1, z+1).element == ' ') configIndex |= 128;
 
                 if (edgeTable[configIndex] == 0)
                     continue;
@@ -38,54 +39,64 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<byte> grid, std::un
                 std::vector<int> conf = reverse(triTable[configIndex]);
                 for (int v : conf) {
                     glm::vec3 vertex;
+                    glm::vec4 color = glm::vec4(1);
 
                     switch (v) {
                     case 0:
                         vertex = interpolate({ x,y,z }, { x + 1,y,z }, isize, resolution);
+                        color = getColor(grid.at(x,y,z), grid.at(x+1,y,z), mode);
                         break;
                     case 1:
                         vertex = interpolate({ x + 1,y,z }, { x + 1,y,z + 1 }, isize, resolution);
+                        color = getColor(grid.at(x+1, y, z), grid.at(x + 1, y, z+1), mode);
                         break;
                     case 2:
                         vertex = interpolate({ x,y,z + 1 }, { x + 1,y,z + 1 }, isize, resolution);
+                        color = getColor(grid.at(x, y, z+1), grid.at(x + 1, y, z+1), mode);
                         break;
                     case 3:
                         vertex = interpolate({ x,y,z }, { x,y,z + 1 }, isize, resolution);
+                        color = getColor(grid.at(x, y, z), grid.at(x, y, z+1), mode);
                         break;
                     case 4:
                         vertex = interpolate({ x,y + 1,z }, { x + 1,y + 1,z }, isize, resolution);
+                        color = getColor(grid.at(x, y+1, z), grid.at(x + 1, y+1, z), mode);
                         break;
                     case 5:
                         vertex = interpolate({ x + 1,y + 1,z }, { x + 1,y + 1,z + 1 }, isize, resolution);
+                        color = getColor(grid.at(x+1, y+1, z), grid.at(x + 1, y+1, z+1), mode);
                         break;
                     case 6:
                         vertex = interpolate({ x,y + 1,z + 1 }, { x + 1,y + 1,z + 1 }, isize, resolution);
+                        color = getColor(grid.at(x, y+1, z+1), grid.at(x + 1, y+1, z+1), mode);
                         break;
                     case 7:
                         vertex = interpolate({ x,y + 1,z + 1 }, { x,y + 1,z }, isize, resolution);
+                        color = getColor(grid.at(x, y+1, z+1), grid.at(x, y+1, z), mode);
                         break;
                     case 8:
                         vertex = interpolate({ x,y + 1,z }, { x,y,z }, isize, resolution);
+                        color = getColor(grid.at(x, y+1, z), grid.at(x, y, z), mode);
                         break;
                     case 9:
                         vertex = interpolate({ x + 1,y + 1,z }, { x + 1,y,z }, isize, resolution);
+                        color = getColor(grid.at(x+1, y+1, z), grid.at(x + 1, y, z), mode);
                         break;
                     case 10:
                         vertex = interpolate({ x + 1,y + 1,z + 1 }, { x + 1,y,z + 1 }, isize, resolution);
+                        color = getColor(grid.at(x+1, y+1, z+1), grid.at(x + 1, y, z+1), mode);
                         break;
                     case 11:
                         vertex = interpolate({ x,y + 1,z + 1 }, { x,y,z + 1 }, isize, resolution);
+                        color = getColor(grid.at(x, y+1, z+1), grid.at(x, y, z+1), mode);
                         break;
                     }
 
                     if (v != -1) {
                         currentCube.push_back(vertex);
-                        //glm::vec4 color = glm::vec4((std::rand() % 255) / 255.0f, (std::rand() % 255) / 255.0f, (std::rand() % 255) / 255.0f, 1 );
-                        vertices.push_back({ glm::vec4(vertex,1), color });
+                        vertices.push_back({ glm::vec4(vertex,1), color});
                         indices.push_back(i);
                         i++;
-
-
                     }
                 }
 
@@ -431,4 +442,16 @@ std::vector<int> MarchingCubesMeshBuilder::reverse(int* arr) {
         res.push_back(arr[15 - i]);
     }
     return res;
+}
+
+glm::vec4 MarchingCubesMeshBuilder::getColor(am::bio::Atom a, am::bio::Atom b, int colorMode) {
+    if (b.element == ' ') {
+        return colorMode == 0 ? am::bio::colors.find(a.element)->second : am::bio::chainColors.find(a.chainId)->second;
+    }
+    else if (a.element == ' ')
+        return colorMode == 0 ? am::bio::colors.find(b.element)->second : am::bio::chainColors.find(b.chainId)->second;
+    else {
+        std::cout << "errore \n";
+        return glm::vec4(0.5);
+    }
 }
