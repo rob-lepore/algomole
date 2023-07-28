@@ -21,7 +21,7 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::bio::Atom>& gri
         for (int y = 0; y < size - 1; ++y) {
             for (int z = 0; z < size - 1; ++z) {
                 // Determine the configuration index based on the voxel values
-                //std::cout << grid.at(x, y, z)->element << "\n";
+                //std::cout << grid.at(x, y, z).element << "\n";
                 int configIndex = 0;
                 if (grid.at(x,y,z).element == ' ') configIndex |= 1;
                 if (grid.at(x+1, y, z).element == ' ') configIndex |= 2;
@@ -34,7 +34,7 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::bio::Atom>& gri
 
                 if (edgeTable[configIndex] == 0)
                     continue;
-
+                
                 std::vector<glm::vec3> currentCube;
                 std::vector<int> conf = reverse(triTable[configIndex]);
                 for (int v : conf) {

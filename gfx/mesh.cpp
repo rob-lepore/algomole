@@ -1,5 +1,8 @@
 #include "mesh.h"
 #include <iostream>
+#include <gl/GLU.h>
+#include <gl/GL.h>
+
 
 am::gfx::Mesh::Mesh(std::vector<Vertex> v, std::vector<unsigned int> i, GLenum mode) {
     this->vertices = v;
@@ -18,7 +21,6 @@ am::gfx::Mesh::Mesh() {
     this->vertices.clear();
     this->indices.clear();
     m_renderMode = GL_TRIANGLES;
-    
 }
 
 
@@ -37,4 +39,3 @@ void am::gfx::Mesh::toObjFile(std::string path) {
         outfile << indices[i + 2] + 1 << "//" << indices[i + 2] + 1 << "\n";
     }
 }
-

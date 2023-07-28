@@ -4,7 +4,7 @@ SurfaceExtractorBuilder& SurfaceExtractorBuilder::setFileParser(FileParser* fp) 
 	m_parser = fp;
 	return *this;
 }
-SurfaceExtractorBuilder& SurfaceExtractorBuilder::SetSpaceFiller(SpaceFiller* sf) {
+SurfaceExtractorBuilder& SurfaceExtractorBuilder::setSpaceFiller(SpaceFiller* sf) {
 	m_spacefiller = sf;
 	return *this;
 }

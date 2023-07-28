@@ -8,10 +8,9 @@ public:
 
 	SurfaceExtractorBuilder& setFileParser(FileParser* fp);
 	SurfaceExtractorBuilder& setPreprocessing(Preprocessing* p);
-	SurfaceExtractorBuilder& SetSpaceFiller(SpaceFiller* sf);
+	SurfaceExtractorBuilder& setSpaceFiller(SpaceFiller* sf);
 	SurfaceExtractorBuilder& setMeshBuilder(MeshBuilder* mb);
 	SurfaceExtractorBuilder& setPostprocessing(Postprocessing* p);
-
 	SurfaceExtractorBuilder& setOption(std::string key, float value);
 
 	SurfaceExtractor build();

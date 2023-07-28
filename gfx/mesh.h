@@ -14,7 +14,6 @@ namespace am{
 
             void toObjFile(std::string path);
 
-            //private:
 
             std::vector<Vertex> vertices;
             std::vector<unsigned int> indices;
@@ -26,6 +25,9 @@ namespace am{
             unsigned int IBO;
 
             GLenum m_renderMode;
+
+            void createVAO();
+
         };
     }
 }
