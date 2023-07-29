@@ -99,13 +99,14 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::bio::Atom>& gri
                         i++;
                     }
                 }
-
+                
+                
                 int n = currentCube.size() / 3;
                 for (int k = 0; k < n; k++) {
                     glm::vec3 p1 = currentCube[k * 3 + 2];
                     glm::vec3 p2 = currentCube[k * 3 + 1];
                     glm::vec3 p3 = currentCube[k * 3 + 0];
-                    glm::vec4 faceNormal = glm::vec4(glm::normalize(glm::cross((p2 - p1), (p3 - p1))), 1);
+                    glm::vec4 faceNormal = glm::vec4(glm::normalize(glm::cross((p3 - p1), (p2 - p1))), 1);
 
                     if (withNormals) {
                         normalMat.at((int)std::round((p1.x + (isize / 2.0f)) * 2.0f),(int)std::round((p1.y + (isize / 2.0f)) * 2.0f),(int)std::round((p1.z + (isize / 2.0f)) * 2.0f)) += faceNormal;
@@ -124,6 +125,7 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::bio::Atom>& gri
         }
     }
 
+    
     if (withNormals) {
         for (am::gfx::Vertex v : vertices) {
             glm::vec4 sum = normalMat.at((int)std::round((v.position.x + (isize / 2.0f)) * 2.0f),(int)std::round((v.position.y + (isize / 2.0f)) * 2.0f),(int)std::round((v.position.z + (isize / 2.0f)) * 2.0f));

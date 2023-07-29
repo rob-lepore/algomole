@@ -13,6 +13,9 @@
 typedef unsigned char byte;
 
 namespace am{
+
+    enum SurfaceType { VdW = 1, SA = 2, MS = 3 };
+
     namespace bio {
 
         const std::map<char, float> vdwRadii{
@@ -29,6 +32,8 @@ namespace am{
             {'N', {0,0,1,1}},
             {'O', {1,0,0,1}},
             {'S', {1,1,0,1}},
+            {'X', {0,1,0.5,1}},
+
         };
 
         const std::map<char, glm::vec4> chainColors{

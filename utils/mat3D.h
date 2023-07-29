@@ -40,6 +40,9 @@ namespace am {
 			return m_w * m_h * m_d;
 		}
 
+		std::vector<T> data() {
+			return m_data;
+		}
 
 	private:
 		size_t m_w;
