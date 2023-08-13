@@ -3,7 +3,7 @@
 #include "../utils/mat3D.h"
 #include <iostream>
 
-SurfaceExtractor::SurfaceExtractor(FileParser* fp, Preprocessing* p, SpaceFiller* sf, MeshBuilder* mb, Postprocessing* post, std::unordered_map<std::string, float> opts) {
+SurfaceExtractor::SurfaceExtractor(FileParser* fp, Preprocessing* p, SpaceFiller* sf, Mesher* mb, Postprocessing* post, std::unordered_map<std::string, float> opts) {
 	m_fileParser = fp;
 	m_pre = p;
 	m_spacefiller = sf;
@@ -26,6 +26,6 @@ am::gfx::Mesh* SurfaceExtractor::generateSurfaceMesh(std::string file) {
     am::gfx::Mesh* mesh = m_mesher->buildMesh(grid, m_opts);
 
 	//step 4
-	am::gfx::Mesh* result = m_post->transform(mesh);
+	am::gfx::Mesh* result = m_post->transform(mesh, m_opts);
     return result;
 }

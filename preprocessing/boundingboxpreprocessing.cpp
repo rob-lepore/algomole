@@ -26,7 +26,7 @@ std::vector<am::bio::Atom> BoundingBoxPreprocessing::transform(std::vector<am::b
 	}
 
 	glm::vec3 diff = maxValues - minValues;
-	float margin = 8.0f;
+	float margin = 8.f;
 	float size = std::max({ diff.x, diff.y, diff.z }) + margin;
 
 	float scaleFactor = boxSize / size;
@@ -39,7 +39,7 @@ std::vector<am::bio::Atom> BoundingBoxPreprocessing::transform(std::vector<am::b
 	std::vector<am::bio::Atom> scaled;
 	for (const auto& a : atoms) {
 		float radius;
-		if(surface == am::VdW){
+		if(surface == am::VDW){
 			radius = a.radius;
 		}
 		else {

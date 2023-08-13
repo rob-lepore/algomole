@@ -5,7 +5,7 @@ class FileParser
 
 public:
 
-    virtual std::vector<am::bio::Atom> parse(std::string, std::unordered_map<std::string, float>) = 0;
+    virtual std::vector<am::bio::Atom> parse(std::string, std::unordered_map<std::string, float>&) = 0;
 
     FileParser() { };
 

@@ -1,4 +1,4 @@
-#include "spherespacefiller.h"
+#include "atomspacefiller.h"
 #include <iostream>
 
 float dist2(glm::vec3 a, glm::vec3 b) {
@@ -26,7 +26,7 @@ std::vector<glm::vec3> getPoints(glm::vec3 center, float r) {
 }
 
 
-am::Mat3D<am::bio::Atom> SphereSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float> opts) {
+am::Mat3D<am::bio::Atom> AtomSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
     float isize = opts["size"];
     float resolution = opts["resolution"];
 

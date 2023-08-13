@@ -8,7 +8,7 @@ SurfaceExtractorBuilder& SurfaceExtractorBuilder::setSpaceFiller(SpaceFiller* sf
 	m_spacefiller = sf;
 	return *this;
 }
-SurfaceExtractorBuilder& SurfaceExtractorBuilder::setMeshBuilder(MeshBuilder* mb) {
+SurfaceExtractorBuilder& SurfaceExtractorBuilder::setMeshBuilder(Mesher* mb) {
 	m_mesher = mb;
 	return *this;
 }

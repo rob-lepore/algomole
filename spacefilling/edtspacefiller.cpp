@@ -1,5 +1,5 @@
-#include "gridedtspacefiller.h"
-#include "spherespacefiller.h"
+#include "edtspacefiller.h"
+#include "atomspacefiller.h"
 #include <iostream>
 #include <queue>
 
@@ -10,11 +10,11 @@ double euclideanDistance(const glm::vec3& p1, const glm::vec3& p2) {
 	return std::sqrt(dx * dx + dy * dy + dz * dz);
 }
 
-am::Mat3D<am::bio::Atom> GridEDTSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float> opts) {
+am::Mat3D<am::bio::Atom> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
 	float scale = opts["scaling_factor"];
 	float probe = opts["probe_radius"];
-	
-	SphereSpaceFiller filler;
+
+	AtomSpaceFiller filler;
 	am::Mat3D<am::bio::Atom> volume = filler.buildVolume(atoms, opts);
 
 	if (opts["surface"] == am::MS) {
@@ -55,7 +55,8 @@ am::Mat3D<am::bio::Atom> GridEDTSpaceFiller::buildVolume(std::vector<am::bio::At
 					// Update the distance if it's smaller than the current value
 					if (value < distanceGrid.at(nx, ny, nz)) {
 						distanceGrid.at(nx, ny, nz) = value;
-						queue.push(glm::vec3(nx, ny, nz));
+						if (value < probe * scale)
+							queue.push(glm::vec3(nx, ny, nz));
 					}
 				}
 			}

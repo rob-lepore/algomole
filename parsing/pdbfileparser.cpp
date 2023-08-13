@@ -1,7 +1,7 @@
 #include "pdbfileparser.h"
 #include <string>
 
-std::vector<am::bio::Atom> PdbFileParser::parse(std::string file, std::unordered_map<std::string, float> opts) {
+std::vector<am::bio::Atom> PdbFileParser::parse(std::string file, std::unordered_map<std::string, float>& opts) {
     std::string line;
     std::vector<am::bio::Atom> atoms;
 

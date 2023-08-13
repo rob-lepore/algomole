@@ -1,6 +1,6 @@
 #include "nonespacefiller.h"
 #include "../utils/Logger.h"
-am::Mat3D<am::bio::Atom> NoneSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float> opts) {
+am::Mat3D<am::bio::Atom> NoneSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
 	am::Mat3D<am::bio::Atom> volume(atoms.size(), 1, 1, am::bio::Atom());
 
 	int i = 0;

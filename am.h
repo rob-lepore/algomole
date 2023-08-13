@@ -14,7 +14,7 @@ typedef unsigned char byte;
 
 namespace am{
 
-    enum SurfaceType { VdW = 1, SA = 2, MS = 3 };
+    enum SurfaceType { VDW = 1, SAS = 2, MS = 3 };
 
     namespace bio {
 
@@ -43,7 +43,6 @@ namespace am{
             {'D', {1,1,0,1}},  //yellow
             {'E', {1,0,1,1}},  //magenta
             {'F', {0,1,1,1}},  //cyan
-
         };
 
         typedef struct Atom {
@@ -67,6 +66,11 @@ namespace am{
                 Atom(glm::vec3(0), ' ', 0);
             }
         } Atom;
+
+        typedef struct GridPoint {
+            am::bio::Atom atom;
+            float value;
+        } GridPoint;
     }
 }
 

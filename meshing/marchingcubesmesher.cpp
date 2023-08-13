@@ -1,6 +1,6 @@
-#include "marchingcubesmeshbuilder.h"
+#include "marchingcubesmesher.h"
 
-am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::bio::Atom>& grid, std::unordered_map<std::string, float> opts) {
+am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::bio::Atom>& grid, std::unordered_map<std::string, float>& opts) {
     std::vector<am::gfx::Vertex> vertices;
     std::vector<unsigned> indices;
     std::vector<glm::vec3> normals;
