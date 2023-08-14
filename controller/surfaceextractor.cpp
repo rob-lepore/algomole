@@ -20,7 +20,7 @@ am::gfx::Mesh* SurfaceExtractor::generateSurfaceMesh(std::string file) {
     auto atoms = m_pre->transform(parsed, m_opts);
 
 	//step 2
-    am::Mat3D<am::bio::Atom> grid = m_spacefiller->buildVolume(atoms, m_opts);
+    am::Mat3D<am::GridPoint> grid = m_spacefiller->buildVolume(atoms, m_opts);
 
 	//step 3
     am::gfx::Mesh* mesh = m_mesher->buildMesh(grid, m_opts);

@@ -26,12 +26,12 @@ std::vector<glm::vec3> getPoints(glm::vec3 center, float r) {
 }
 
 
-am::Mat3D<am::bio::Atom> AtomSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
+am::Mat3D<am::GridPoint> AtomSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
     float isize = opts["size"];
     float resolution = opts["resolution"];
 
     int size = std::floor(isize * resolution);
-    am::Mat3D<am::bio::Atom> volume(size, size, size, am::bio::Atom(glm::vec3(0), ' ', 0));
+    am::Mat3D<am::GridPoint> volume(size, size, size, { am::bio::Atom(glm::vec3(0), ' ', 0), 0 });
 
     glm::vec3 origin = glm::vec3(-size / 2);
 
@@ -47,7 +47,8 @@ am::Mat3D<am::bio::Atom> AtomSpaceFiller::buildVolume(std::vector<am::bio::Atom>
         //std::cout << x_centro << " " << y_centro << " " << z_centro << " " << raggio << "\n";
         for (const auto& punto : punti_sfera) {
             //std::cout << "Punto: (" << punto.x << ", " << punto.y << ", " << punto.z << ")" << std::endl;
-            volume.at(punto.x, punto.y, punto.z) = am::bio::Atom(atom.position, atom.element, atom.radius, atom.chainId);
+            volume.at(punto.x, punto.y, punto.z).atom = am::bio::Atom(atom.position, atom.element, atom.radius, atom.chainId);
+            volume.at(punto.x, punto.y, punto.z).value = 1;
         }
     }
     return volume;

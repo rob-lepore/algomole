@@ -6,6 +6,6 @@ class Mesher
 {
 public:
 	Mesher();
-	virtual am::gfx::Mesh* buildMesh(am::Mat3D<am::bio::Atom>&, std::unordered_map<std::string, float>& opts) = 0;
+	virtual am::gfx::Mesh* buildMesh(am::Mat3D<am::GridPoint>&, std::unordered_map<std::string, float>& opts) = 0;
 };
 

@@ -1,6 +1,6 @@
 #include "gridspacefiller.h"
 #include <iostream>
-am::Mat3D<am::bio::Atom> GridSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
+am::Mat3D<am::GridPoint> GridSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
     float isize = opts["size"];
     float resolution = opts["resolution"];
 
@@ -35,7 +35,7 @@ am::Mat3D<am::bio::Atom> GridSpaceFiller::buildVolume(std::vector<am::bio::Atom>
         }
     }
     
-    return volume;
+    return am::Mat3D<am::GridPoint>(1,1,1);
 
 }
 

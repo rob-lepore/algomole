@@ -8,7 +8,7 @@ class MarchingCubesMeshBuilder : public Mesher
 {
 public:
 
-    am::gfx::Mesh* buildMesh(am::Mat3D<am::bio::Atom>& grid, std::unordered_map<std::string, float>& opts);
+    am::gfx::Mesh* buildMesh(am::Mat3D< am::GridPoint>& grid, std::unordered_map<std::string, float>& opts);
 
 private:
 

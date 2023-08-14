@@ -10,12 +10,12 @@ double euclideanDistance(const glm::vec3& p1, const glm::vec3& p2) {
 	return std::sqrt(dx * dx + dy * dy + dz * dz);
 }
 
-am::Mat3D<am::bio::Atom> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
+am::Mat3D<am::GridPoint> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
 	float scale = opts["scaling_factor"];
 	float probe = opts["probe_radius"];
 
 	AtomSpaceFiller filler;
-	am::Mat3D<am::bio::Atom> volume = filler.buildVolume(atoms, opts);
+	am::Mat3D<am::GridPoint> volume = filler.buildVolume(atoms, opts);
 
 	if (opts["surface"] == am::MS) {
 
@@ -25,7 +25,7 @@ am::Mat3D<am::bio::Atom> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom> 
 		for (int i = 0; i < volume.width(); i++) {
 			for (int j = 0; j < volume.height(); j++) {
 				for (int k = 0; k < volume.depth(); k++) {
-					if (volume.at(i, j, k).element == ' ') {
+					if (volume.at(i, j, k).atom.element == ' ') {
 						distanceGrid.at(i, j, k) = 0;
 						queue.push({ i,j,k });
 					}
@@ -67,7 +67,8 @@ am::Mat3D<am::bio::Atom> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom> 
 			for (int j = 0; j < volume.height(); j++) {
 				for (int k = 0; k < volume.depth(); k++) {
 					if (distanceGrid.at(i, j, k) < probe * scale) {
-						volume.at(i, j, k).element = ' ';
+						volume.at(i, j, k).value = 0;
+						volume.at(i, j, k).atom.element = ' ';
 					}
 					/* reentrant surface
 					else if (euclideanDistance( volume.at(i, j, k).position, ( glm::vec3(i,j,k) - glm::vec3(opts["size"]/2) ) ) > volume.at(i, j, k).radius - probe) {

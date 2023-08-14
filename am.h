@@ -67,11 +67,12 @@ namespace am{
             }
         } Atom;
 
-        typedef struct GridPoint {
-            am::bio::Atom atom;
-            float value;
-        } GridPoint;
     }
+
+    typedef struct GridPoint {
+        am::bio::Atom atom;
+        float value;
+    } GridPoint;
 }
 
 namespace am{
