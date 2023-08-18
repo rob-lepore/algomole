@@ -45,51 +45,51 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::GridPoint>& gri
                     switch (v) {
                     case 0:
                         vertex = interpolate({ x,y,z }, { x + 1,y,z }, isize, resolution);
-                        color = getColor(grid.at(x,y,z).atom, grid.at(x+1,y,z).atom, mode);
+                        color = getColor(grid.at(x,y,z), grid.at(x+1,y,z), mode, isolevel);
                         break;
                     case 1:
                         vertex = interpolate({ x + 1,y,z }, { x + 1,y,z + 1 }, isize, resolution);
-                        color = getColor(grid.at(x+1, y, z).atom, grid.at(x + 1, y, z+1).atom, mode);
+                        color = getColor(grid.at(x+1, y, z), grid.at(x + 1, y, z+1), mode, isolevel);
                         break;
                     case 2:
                         vertex = interpolate({ x,y,z + 1 }, { x + 1,y,z + 1 }, isize, resolution);
-                        color = getColor(grid.at(x, y, z+1).atom, grid.at(x + 1, y, z+1).atom, mode);
+                        color = getColor(grid.at(x, y, z+1), grid.at(x + 1, y, z+1), mode, isolevel);
                         break;
                     case 3:
                         vertex = interpolate({ x,y,z }, { x,y,z + 1 }, isize, resolution);
-                        color = getColor(grid.at(x, y, z).atom, grid.at(x, y, z+1).atom, mode);
+                        color = getColor(grid.at(x, y, z), grid.at(x, y, z+1), mode, isolevel);
                         break;
                     case 4:
                         vertex = interpolate({ x,y + 1,z }, { x + 1,y + 1,z }, isize, resolution);
-                        color = getColor(grid.at(x, y+1, z).atom, grid.at(x + 1, y+1, z).atom, mode);
+                        color = getColor(grid.at(x, y+1, z), grid.at(x + 1, y+1, z), mode, isolevel);
                         break;
                     case 5:
                         vertex = interpolate({ x + 1,y + 1,z }, { x + 1,y + 1,z + 1 }, isize, resolution);
-                        color = getColor(grid.at(x+1, y+1, z).atom, grid.at(x + 1, y+1, z+1).atom, mode);
+                        color = getColor(grid.at(x+1, y+1, z), grid.at(x + 1, y+1, z+1), mode, isolevel);
                         break;
                     case 6:
                         vertex = interpolate({ x,y + 1,z + 1 }, { x + 1,y + 1,z + 1 }, isize, resolution);
-                        color = getColor(grid.at(x, y+1, z+1).atom, grid.at(x + 1, y+1, z+1).atom, mode);
+                        color = getColor(grid.at(x, y+1, z+1), grid.at(x + 1, y+1, z+1), mode, isolevel);
                         break;
                     case 7:
                         vertex = interpolate({ x,y + 1,z + 1 }, { x,y + 1,z }, isize, resolution);
-                        color = getColor(grid.at(x, y+1, z+1).atom, grid.at(x, y+1, z).atom, mode);
+                        color = getColor(grid.at(x, y+1, z+1), grid.at(x, y+1, z), mode, isolevel);
                         break;
                     case 8:
                         vertex = interpolate({ x,y + 1,z }, { x,y,z }, isize, resolution);
-                        color = getColor(grid.at(x, y+1, z).atom, grid.at(x, y, z).atom, mode);
+                        color = getColor(grid.at(x, y+1, z), grid.at(x, y, z), mode, isolevel);
                         break;
                     case 9:
                         vertex = interpolate({ x + 1,y + 1,z }, { x + 1,y,z }, isize, resolution);
-                        color = getColor(grid.at(x+1, y+1, z).atom, grid.at(x + 1, y, z).atom, mode);
+                        color = getColor(grid.at(x+1, y+1, z), grid.at(x + 1, y, z), mode, isolevel);
                         break;
                     case 10:
                         vertex = interpolate({ x + 1,y + 1,z + 1 }, { x + 1,y,z + 1 }, isize, resolution);
-                        color = getColor(grid.at(x+1, y+1, z+1).atom, grid.at(x + 1, y, z+1).atom, mode);
+                        color = getColor(grid.at(x+1, y+1, z+1), grid.at(x + 1, y, z+1), mode, isolevel);
                         break;
                     case 11:
                         vertex = interpolate({ x,y + 1,z + 1 }, { x,y,z + 1 }, isize, resolution);
-                        color = getColor(grid.at(x, y+1, z+1).atom, grid.at(x, y, z+1).atom, mode);
+                        color = getColor(grid.at(x, y+1, z+1), grid.at(x, y, z+1), mode, isolevel);
                         break;
                     }
 
@@ -447,12 +447,12 @@ std::vector<int> MarchingCubesMeshBuilder::reverse(int* arr) {
     return res;
 }
 
-glm::vec4 MarchingCubesMeshBuilder::getColor(am::bio::Atom a, am::bio::Atom b, int colorMode) {
-    if (b.element == ' ') {
-        return colorMode == 0 ? am::bio::colors.find(a.element)->second : am::bio::chainColors.find(a.chainId)->second;
+glm::vec4 MarchingCubesMeshBuilder::getColor(am::GridPoint a, am::GridPoint b, int colorMode, float isovalue) {
+    if (b.value < isovalue) {
+        return colorMode == 0 ? am::bio::colors.find(a.atom.element)->second : am::bio::chainColors.find(a.atom.chainId)->second;
     }
-    else if (a.element == ' ')
-        return colorMode == 0 ? am::bio::colors.find(b.element)->second : am::bio::chainColors.find(b.chainId)->second;
+    else if (a.value < isovalue)
+        return colorMode == 0 ? am::bio::colors.find(b.atom.element)->second : am::bio::chainColors.find(b.atom.chainId)->second;
     else {
         std::cout << "errore \n";
         return glm::vec4(0.5);

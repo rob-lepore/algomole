@@ -1,14 +1,14 @@
 #include "atomspacefiller.h"
 #include <iostream>
 
-float dist2(glm::vec3 a, glm::vec3 b) {
+inline float dist2(glm::vec3 a, glm::vec3 b) {
     float dx = a.x - b.x;
     float dy = a.y - b.y;
     float dz = a.z - b.z;
     return ((dx * dx) + (dy * dy) + (dz * dz));
 }
 
-std::vector<glm::vec3> getPoints(glm::vec3 center, float r) {
+inline std::vector<glm::vec3> getPoints(glm::vec3 center, float r) {
     glm::vec3 min = center - glm::vec3(r);
     glm::vec3 max = center + glm::vec3(r);
     std::vector<glm::vec3> points;

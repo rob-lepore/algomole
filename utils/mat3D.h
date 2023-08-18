@@ -24,19 +24,19 @@ namespace am {
 			return m_data[(z * m_h * m_w) + (y * m_w) + x];
 		}
 
-		size_t width() {
+		constexpr size_t width() {
 			return m_w;
 		}
 
-		size_t height() {
+		const size_t height() {
 			return m_h;
 		}
 
-		size_t depth() {
+		const size_t depth() {
 			return m_d;
 		}
 
-		size_t size() {
+		const size_t size() {
 			return m_w * m_h * m_d;
 		}
 

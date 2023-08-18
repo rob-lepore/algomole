@@ -17,7 +17,7 @@ private:
 
     glm::vec3 interpolate(glm::vec3 first, glm::vec3 second, float, float);
     std::vector<int> reverse(int* arr);
-    glm::vec4 getColor(am::bio::Atom a, am::bio::Atom b, int colorMode);
+    glm::vec4 getColor(am::GridPoint a, am::GridPoint b, int colorMode, float isovalue);
 
 };
 
