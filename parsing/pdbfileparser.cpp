@@ -31,9 +31,9 @@ std::vector<am::bio::Atom> PdbFileParser::parse(std::string file, std::unordered
 bool PdbFileParser::parseLine(std::string line, am::bio::Atom* atom) {
     if (line.substr(0, 4) == "ATOM") {
 
-        float X = std::stod(line.substr(31, 38));
-        float Y = std::stod(line.substr(40, 47));
-        float Z = std::stod(line.substr(47, 56));
+        float X = std::stod(line.substr(30, 8));
+        float Y = std::stod(line.substr(38, 8));
+        float Z = std::stod(line.substr(46, 8));
 
         //std::cout << X << " " << Y << " " << Z << "\n";
         std::string element = line.substr(13, 2);
