@@ -448,6 +448,9 @@ std::vector<int> MarchingCubesMeshBuilder::reverse(int* arr) {
 }
 
 glm::vec4 MarchingCubesMeshBuilder::getColor(am::GridPoint a, am::GridPoint b, int colorMode, float isovalue) {
+    if (colorMode == 2) {
+        return { 0, 1, 0.5, 1 };
+    }
     if (b.value < isovalue) {
         return colorMode == 0 ? am::bio::colors.find(a.atom.element)->second : am::bio::chainColors.find(a.atom.chainId)->second;
     }

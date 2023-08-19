@@ -39,13 +39,35 @@ namespace am{
         };
 
         const std::map<char, glm::vec4> chainColors{
-            {'A', {0,1,0,1}},  //green
-            {'B', {0,0,1,1}},  //blue
-            {'C', {1,0,0,1}},  //red
-            {'D', {1,1,0,1}},  //yellow
-            {'E', {1,0,1,1}},  //magenta
-            {'F', {0,1,1,1}},  //cyan
+            {'A', {0, 1, 0, 1}},    // green
+            {'B', {0, 0, 1, 1}},    // blue
+            {'C', {1, 0, 0, 1}},    // red
+            {'D', {1, 1, 0, 1}},    // yellow
+            {'E', {1, 0, 1, 1}},    // magenta
+            {'F', {0, 1, 1, 1}},    // cyan
+            {'G', {1, 0.5, 0, 1}},  // orange
+            {'H', {1, 0, 0.5, 1}},  // pink
+            {'I', {0.5, 1, 0, 1}},  // lime green
+            {'J', {0, 1, 0.5, 1}},  // teal
+            {'K', {1, 0.5, 0.5, 1}}, // light pink
+            {'L', {0.5, 1, 0.5, 1}}, // light green
+            {'M', {0.5, 0.5, 1, 1}}, // light blue
+            {'N', {0.8, 0, 0, 1}},  // bright red
+            {'O', {0, 0.8, 0, 1}},  // bright green
+            {'P', {0, 0, 0.8, 1}},  // bright blue
+            {'Q', {0.8, 0, 0.8, 1}}, // bright magenta
+            {'R', {0, 0.8, 0.8, 1}}, // bright cyan
+            {'S', {0.8, 0.8, 0, 1}}, // bright yellow
+            {'T', {1, 0.4, 0, 1}},  // vivid orange
+            {'U', {1, 0, 0.4, 1}},  // vivid pink
+            {'V', {0.4, 1, 0, 1}},  // vivid green
+            {'W', {0, 0.4, 1, 1}},  // vivid blue
+            {'X', {0.4, 0, 1, 1}},  // vivid purple
+            {'Y', {1, 0, 0.4, 1}},  // vivid red
+            {'Z', {0.4, 0, 1, 1}}   // vivid purple
         };
+
+
 
         typedef struct Atom {
             glm::vec3 position;
