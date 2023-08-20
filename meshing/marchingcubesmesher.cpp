@@ -6,16 +6,13 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::GridPoint>& gri
     std::vector<glm::vec3> normals;
     unsigned i = 0;
 
-    float isize = opts["size"];
-    float resolution = opts["resolution"];
+    int size = opts["size"];
     bool withNormals = opts["with_normals"] > 0;
     int mode = opts["color_mode"];
     float isolevel = opts["isovalue"];
 
-    int size = std::floor(isize * resolution);
-
-    am::Mat3D<glm::vec4> normalMat(isize*2, isize * 2, isize * 2, glm::vec4(0));
-    glm::vec3 o = glm::vec3(-(isize * resolution) / 2);
+    am::Mat3D<glm::vec4> normalMat(size*2, size * 2, size * 2, glm::vec4(0));
+    glm::vec3 o = glm::vec3(-size / 2);
 
     // Iterate over each cell in the grid
     for (int x = 0; x < size - 1; ++x) {
@@ -44,51 +41,51 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::GridPoint>& gri
 
                     switch (v) {
                     case 0:
-                        vertex = interpolate({ x,y,z }, { x + 1,y,z }, isize, resolution);
+                        vertex = interpolate({ x,y,z }, { x + 1,y,z }, size);
                         color = getColor(grid.at(x,y,z), grid.at(x+1,y,z), mode, isolevel);
                         break;
                     case 1:
-                        vertex = interpolate({ x + 1,y,z }, { x + 1,y,z + 1 }, isize, resolution);
+                        vertex = interpolate({ x + 1,y,z }, { x + 1,y,z + 1 }, size);
                         color = getColor(grid.at(x+1, y, z), grid.at(x + 1, y, z+1), mode, isolevel);
                         break;
                     case 2:
-                        vertex = interpolate({ x,y,z + 1 }, { x + 1,y,z + 1 }, isize, resolution);
+                        vertex = interpolate({ x,y,z + 1 }, { x + 1,y,z + 1 }, size);
                         color = getColor(grid.at(x, y, z+1), grid.at(x + 1, y, z+1), mode, isolevel);
                         break;
                     case 3:
-                        vertex = interpolate({ x,y,z }, { x,y,z + 1 }, isize, resolution);
+                        vertex = interpolate({ x,y,z }, { x,y,z + 1 }, size);
                         color = getColor(grid.at(x, y, z), grid.at(x, y, z+1), mode, isolevel);
                         break;
                     case 4:
-                        vertex = interpolate({ x,y + 1,z }, { x + 1,y + 1,z }, isize, resolution);
+                        vertex = interpolate({ x,y + 1,z }, { x + 1,y + 1,z }, size);
                         color = getColor(grid.at(x, y+1, z), grid.at(x + 1, y+1, z), mode, isolevel);
                         break;
                     case 5:
-                        vertex = interpolate({ x + 1,y + 1,z }, { x + 1,y + 1,z + 1 }, isize, resolution);
+                        vertex = interpolate({ x + 1,y + 1,z }, { x + 1,y + 1,z + 1 }, size);
                         color = getColor(grid.at(x+1, y+1, z), grid.at(x + 1, y+1, z+1), mode, isolevel);
                         break;
                     case 6:
-                        vertex = interpolate({ x,y + 1,z + 1 }, { x + 1,y + 1,z + 1 }, isize, resolution);
+                        vertex = interpolate({ x,y + 1,z + 1 }, { x + 1,y + 1,z + 1 }, size);
                         color = getColor(grid.at(x, y+1, z+1), grid.at(x + 1, y+1, z+1), mode, isolevel);
                         break;
                     case 7:
-                        vertex = interpolate({ x,y + 1,z + 1 }, { x,y + 1,z }, isize, resolution);
+                        vertex = interpolate({ x,y + 1,z + 1 }, { x,y + 1,z }, size);
                         color = getColor(grid.at(x, y+1, z+1), grid.at(x, y+1, z), mode, isolevel);
                         break;
                     case 8:
-                        vertex = interpolate({ x,y + 1,z }, { x,y,z }, isize, resolution);
+                        vertex = interpolate({ x,y + 1,z }, { x,y,z }, size);
                         color = getColor(grid.at(x, y+1, z), grid.at(x, y, z), mode, isolevel);
                         break;
                     case 9:
-                        vertex = interpolate({ x + 1,y + 1,z }, { x + 1,y,z }, isize, resolution);
+                        vertex = interpolate({ x + 1,y + 1,z }, { x + 1,y,z }, size);
                         color = getColor(grid.at(x+1, y+1, z), grid.at(x + 1, y, z), mode, isolevel);
                         break;
                     case 10:
-                        vertex = interpolate({ x + 1,y + 1,z + 1 }, { x + 1,y,z + 1 }, isize, resolution);
+                        vertex = interpolate({ x + 1,y + 1,z + 1 }, { x + 1,y,z + 1 }, size);
                         color = getColor(grid.at(x+1, y+1, z+1), grid.at(x + 1, y, z+1), mode, isolevel);
                         break;
                     case 11:
-                        vertex = interpolate({ x,y + 1,z + 1 }, { x,y,z + 1 }, isize, resolution);
+                        vertex = interpolate({ x,y + 1,z + 1 }, { x,y,z + 1 }, size);
                         color = getColor(grid.at(x, y+1, z+1), grid.at(x, y, z+1), mode, isolevel);
                         break;
                     }
@@ -110,9 +107,9 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::GridPoint>& gri
                     glm::vec4 faceNormal = glm::vec4(glm::normalize(glm::cross((p3 - p1), (p2 - p1))), 1);
 
                     if (withNormals) {
-                        normalMat.at((int)std::round((p1.x + (isize / 2.0f)) * 2.0f),(int)std::round((p1.y + (isize / 2.0f)) * 2.0f),(int)std::round((p1.z + (isize / 2.0f)) * 2.0f)) += faceNormal;
-                        normalMat.at((int)std::round((p2.x + (isize / 2.0f)) * 2.0f),(int)std::round((p2.y + (isize / 2.0f)) * 2.0f),(int)std::round((p2.z + (isize / 2.0f)) * 2.0f)) += faceNormal;
-                        normalMat.at((int)std::round((p3.x + (isize / 2.0f)) * 2.0f),(int)std::round((p3.y + (isize / 2.0f)) * 2.0f),(int)std::round((p3.z + (isize / 2.0f)) * 2.0f)) += faceNormal;
+                        normalMat.at((int)std::round((p1.x + (size / 2.0f)) * 2.0f),(int)std::round((p1.y + (size / 2.0f)) * 2.0f),(int)std::round((p1.z + (size / 2.0f)) * 2.0f)) += faceNormal;
+                        normalMat.at((int)std::round((p2.x + (size / 2.0f)) * 2.0f),(int)std::round((p2.y + (size / 2.0f)) * 2.0f),(int)std::round((p2.z + (size / 2.0f)) * 2.0f)) += faceNormal;
+                        normalMat.at((int)std::round((p3.x + (size / 2.0f)) * 2.0f),(int)std::round((p3.y + (size / 2.0f)) * 2.0f),(int)std::round((p3.z + (size / 2.0f)) * 2.0f)) += faceNormal;
                     }
                     else {
                         normals.push_back(faceNormal);
@@ -129,7 +126,7 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::GridPoint>& gri
     
     if (withNormals) {
         for (am::gfx::Vertex v : vertices) {
-            glm::vec4 sum = normalMat.at((int)std::round((v.position.x + (isize / 2.0f)) * 2.0f),(int)std::round((v.position.y + (isize / 2.0f)) * 2.0f),(int)std::round((v.position.z + (isize / 2.0f)) * 2.0f));
+            glm::vec4 sum = normalMat.at((int)std::round((v.position.x + (size / 2.0f)) * 2.0f),(int)std::round((v.position.y + (size / 2.0f)) * 2.0f),(int)std::round((v.position.z + (size / 2.0f)) * 2.0f));
             glm::vec3 normal = glm::vec3(sum) / sum.w;
             normals.push_back(glm::normalize(normal));
         }
@@ -432,11 +429,11 @@ int MarchingCubesMeshBuilder::triTable[256][16] =
 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1} };
 
 
-glm::vec3 MarchingCubesMeshBuilder::interpolate(glm::vec3 first, glm::vec3 second, float size, float resolution) {
-    glm::vec3 o = glm::vec3(-(size * resolution) / 2);
+glm::vec3 MarchingCubesMeshBuilder::interpolate(glm::vec3 first, glm::vec3 second, float size) {
+    glm::vec3 o = glm::vec3(-(size) / 2);
 
     glm::vec3 mid = (first + second) / 2.0f;
-    return (o + mid) / resolution;
+    return (o + mid);
 }
 
 std::vector<int> MarchingCubesMeshBuilder::reverse(int* arr) {

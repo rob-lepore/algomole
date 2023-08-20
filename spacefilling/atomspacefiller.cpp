@@ -27,20 +27,17 @@ inline std::vector<glm::vec3> getPoints(glm::vec3 center, float r) {
 
 
 am::Mat3D<am::GridPoint> AtomSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
-    float isize = opts["size"];
-    float resolution = opts["resolution"];
-
-    int size = std::floor(isize * resolution);
-    am::Mat3D<am::GridPoint> volume(size, size, size, { am::bio::Atom(glm::vec3(0), ' ', 0), 0 });
+    int size = opts["size"];
+    am::Mat3D<am::GridPoint> volume(size, size, size, { am::bio::Atom(), 0 });
 
     glm::vec3 origin = glm::vec3(-size / 2);
 
     for (const auto& atom : atoms) {
 
-        int x_centro = size / 2 + atom.position.x * resolution;
-        int y_centro = size / 2 + atom.position.y * resolution;
-        int z_centro = size / 2 + atom.position.z * resolution;
-        float raggio = atom.radius * resolution;
+        int x_centro = size / 2 + atom.position.x;
+        int y_centro = size / 2 + atom.position.y;
+        int z_centro = size / 2 + atom.position.z;
+        float raggio = atom.radius;
         glm::vec3 centro = glm::vec3(x_centro, y_centro, z_centro);
 
         std::vector<glm::vec3> punti_sfera = getPoints(centro, raggio);

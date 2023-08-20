@@ -15,7 +15,7 @@ private:
     static int edgeTable[256];
     static int triTable[256][16];
 
-    glm::vec3 interpolate(glm::vec3 first, glm::vec3 second, float, float);
+    glm::vec3 interpolate(glm::vec3 first, glm::vec3 second, float);
     std::vector<int> reverse(int* arr);
     glm::vec4 getColor(am::GridPoint a, am::GridPoint b, int colorMode, float isovalue);
 
