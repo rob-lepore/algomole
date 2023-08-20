@@ -5,7 +5,7 @@ am::Mat3D<am::GridPoint> GaussianSpaceFiller::buildVolume(std::vector<am::bio::A
 	int size = opts["size"];
 	am::Mat3D<am::GridPoint> volume(size, size, size, { am::bio::Atom(glm::vec3(0), ' ', 0), 0 });
 
-	float rp = opts["probe_radius"];
+	float rp = opts["probe_radius"] * opts["scaling_factor"];
 	float ln2 = std::log(2);
 	for (const auto& atom : atoms)
 	{
@@ -31,18 +31,6 @@ am::Mat3D<am::GridPoint> GaussianSpaceFiller::buildVolume(std::vector<am::bio::A
 				}
 			}
 		}
-		/*
-		for (int x = 0; x < size; x++) {
-			for (int y = 0; y < size; y++) {
-				for (int z = 0; z < size; z++) {
-					float dist = (c.x - x)*(c.x - x) + (c.y - y)*(c.y - y) + (c.z - z)*(c.z - z);
-					float eta = std::exp(-dist / (2 * s_2 * r * r) + 1 / (2 * s_2));
-					volume.at(x, y, z).value += eta;
-					volume.at(x, y, z).atom = am::bio::Atom(atom.position, atom.element, atom.radius, atom.chainId);
-
-				}
-			}
-		}*/
 	}
 
 
