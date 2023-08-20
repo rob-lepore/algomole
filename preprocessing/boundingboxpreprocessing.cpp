@@ -39,7 +39,7 @@ std::vector<am::bio::Atom> BoundingBoxPreprocessing::transform(std::vector<am::b
 	std::vector<am::bio::Atom> scaled;
 	for (const auto& a : atoms) {
 		float radius;
-		if(surface == am::VDW){
+		if(surface == am::VDWS){
 			radius = a.radius;
 		}
 		else {

@@ -7,7 +7,7 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::GridPoint>& gri
     unsigned i = 0;
 
     int size = opts["size"];
-    bool withNormals = opts["with_normals"] > 0;
+    bool withNormals = opts["with_normals"];
     int mode = opts["color_mode"];
     float isolevel = opts["isovalue"];
 
@@ -445,14 +445,14 @@ std::vector<int> MarchingCubesMeshBuilder::reverse(int* arr) {
 }
 
 glm::vec4 MarchingCubesMeshBuilder::getColor(am::GridPoint a, am::GridPoint b, int colorMode, float isovalue) {
-    if (colorMode == 2) {
+    if (colorMode == am::MONO) {
         return { 0, 1, 0.5, 1 };
     }
     if (b.value < isovalue) {
-        return colorMode == 0 ? am::bio::colors.find(a.atom.element)->second : am::bio::chainColors.find(a.atom.chainId)->second;
+        return colorMode == am::ELEMENT ? am::bio::colors.find(a.atom.element)->second : am::bio::chainColors.find(a.atom.chainId)->second;
     }
     else if (a.value < isovalue)
-        return colorMode == 0 ? am::bio::colors.find(b.atom.element)->second : am::bio::chainColors.find(b.atom.chainId)->second;
+        return colorMode == am::ELEMENT ? am::bio::colors.find(b.atom.element)->second : am::bio::chainColors.find(b.atom.chainId)->second;
     else {
         std::cout << "errore \n";
         return glm::vec4(0.5);

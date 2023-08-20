@@ -14,7 +14,9 @@ typedef unsigned char byte;
 
 namespace am{
 
-    enum SurfaceType { VDW = 1, SAS = 2, MS = 3 };
+    enum SurfaceType { VDWS = 1, SAS = 2, MS = 3 };
+    enum ColorMode { ELEMENT, CHAIN, MONO };
+    enum Bool { AM_FALSE, AM_TRUE };
 
     namespace bio {
 
