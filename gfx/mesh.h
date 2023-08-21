@@ -1,5 +1,6 @@
 #pragma once
 #include "../am.h"
+#include <set>
 
 namespace am{
     namespace gfx {
@@ -8,25 +9,18 @@ namespace am{
         {
 
         public:
-            Mesh(std::vector<Vertex>, std::vector<unsigned int>, GLenum);
-            Mesh(std::vector<Vertex>, std::vector<unsigned int>, std::vector<glm::vec3>, GLenum);
+            Mesh(std::vector<Vertex>, std::vector<unsigned int>, am::RenderMode);
             Mesh();
 
+            std::set<unsigned int> connectedVertices(unsigned int vertex);
+            void recalculateNormals();
             void toObjFile(std::string path);
 
 
             std::vector<Vertex> vertices;
             std::vector<unsigned int> indices;
-            std::vector<glm::vec3> normals;
 
-            unsigned int VAO;
-            unsigned int VBO;
-            unsigned int VBOnormali;
-            unsigned int IBO;
-
-            GLenum m_renderMode;
-
-            void createVAO();
+            am::RenderMode m_renderMode;
 
         };
     }

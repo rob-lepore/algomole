@@ -17,6 +17,8 @@ namespace am{
     enum SurfaceType { VDWS = 1, SAS = 2, MS = 3 };
     enum ColorMode { ELEMENT, CHAIN, MONO };
     enum Bool { AM_FALSE, AM_TRUE };
+    enum RenderMode { TRIANGLES = 4, POINTS = 0};
+    enum Effect {SMOOTH, SHARP};
 
     namespace bio {
 
@@ -109,42 +111,21 @@ namespace am{
         typedef struct Vertex {
             glm::vec4 position;
             glm::vec4 color;
-            glm::vec3 normal;
+            glm::vec4 normal;
 
             Vertex(glm::vec4 pos, glm::vec4 col) {
                 position = pos;
                 color = col;
-                normal = glm::vec3(0);
+                normal = glm::vec4(0);
+            }
+
+            Vertex() {
+                position = glm::vec4(NAN);
+                color = glm::vec4(0);
+                normal = glm::vec4(0);
             }
         } Vertex;
 
-        typedef struct {
-            unsigned int light_color_pointer;
-            unsigned int light_power_pointer;
-            unsigned int light_vector_pointer;
-            unsigned int material_diffuse;
-            unsigned int material_ambient;
-            unsigned int material_specular;
-            unsigned int material_shininess;
-        } LightShaderUniform;
-
-        typedef struct {
-            glm::vec4 vector;
-            glm::vec3 color;
-            float power;
-        } Light;
-
-        typedef struct {
-            glm::vec3 ambient;
-            glm::vec3 diffuse;
-            glm::vec3 specular;
-            float shininess;
-        } Material;
-
-        /*
-        GLuint loadShader(const char* filename, GLenum shader_type);
-        Mesh* loadMeshFromFile(const char* filename);
-        bool loadAssImp(const char* path, std::vector<am::gfx::Mesh*>& mymesh);
-        */
+        
     }
 }

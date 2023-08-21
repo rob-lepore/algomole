@@ -1,17 +1,24 @@
 #include "marchingcubesmesher.h"
 
+struct Vec3Hash {
+    std::size_t operator()(const glm::vec3& v) const {
+        // Implementa una funzione hash personalizzata per glm::vec3
+        // Puoi usare le funzioni hash standard come std::hash per le componenti x, y, z.
+        return std::hash<float>()(v.x) ^ std::hash<float>()(v.y) ^ std::hash<float>()(v.z);
+    }
+};
+
 am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::GridPoint>& grid, std::unordered_map<std::string, float>& opts) {
     std::vector<am::gfx::Vertex> vertices;
-    std::vector<unsigned> indices;
-    std::vector<glm::vec3> normals;
+    std::vector<unsigned int> indices;
+    std::unordered_map<glm::vec3, unsigned int, Vec3Hash> v_map;
     unsigned i = 0;
 
-    int size = opts["size"];
+    int size = opts["size"]; 
     bool withNormals = opts["with_normals"];
     int mode = opts["color_mode"];
     float isolevel = opts["isovalue"];
 
-    am::Mat3D<glm::vec4> normalMat(size*2, size * 2, size * 2, glm::vec4(0));
     glm::vec3 o = glm::vec3(-size / 2);
 
     // Iterate over each cell in the grid
@@ -30,15 +37,17 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::GridPoint>& gri
                 if (grid.at(x + 1, y+1, z+1).value < isolevel) configIndex |= 64;
                 if (grid.at(x, y+1, z+1).value < isolevel) configIndex |= 128;
 
-                if (edgeTable[configIndex] == 0)
+                if (configIndex == 0 || configIndex == 255)//edgeTable[configIndex] == 0)
                     continue;
                 
-                std::vector<glm::vec3> currentCube;
-                std::vector<int> conf = reverse(triTable[configIndex]);
-                for (int v : conf) {
+                std::vector<int> cube;
+
+                for ( int ind = 15; ind >= 0; ind--)
+                {
+                    int v = triTable[configIndex][ind];
                     glm::vec3 vertex;
                     glm::vec4 color = glm::vec4(1);
-
+                    
                     switch (v) {
                     case 0:
                         vertex = interpolate({ x,y,z }, { x + 1,y,z }, size);
@@ -89,50 +98,54 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::GridPoint>& gri
                         color = getColor(grid.at(x, y+1, z+1), grid.at(x, y, z+1), mode, isolevel);
                         break;
                     }
-
+                    
                     if (v != -1) {
-                        currentCube.push_back(vertex);
-                        vertices.push_back({ glm::vec4(vertex,1), color});
-                        indices.push_back(i);
-                        i++;
+
+                        glm::vec3 pos = { std::round(vertex.x * 2),std::round(vertex.y * 2),std::round(vertex.z * 2) };
+                        if (v_map.find(pos) != v_map.end() && opts["normals"] == am::SMOOTH) { // vertice già visto
+                            unsigned int index = v_map[pos];
+                            indices.push_back(index);
+                            cube.push_back(index);
+                        }
+                        else {                                // vertice nuovo
+                            unsigned int index = vertices.size();
+                            v_map[pos] = index;
+                            indices.push_back(index);
+                            vertices.push_back({ glm::vec4(vertex,1), color });
+                            cube.push_back(index);
+
+                        }
+                     
                     }
                 }
-                
-                
-                int n = currentCube.size() / 3;
+                                
+                int n = cube.size() / 3;
                 for (int k = 0; k < n; k++) {
-                    glm::vec3 p1 = currentCube[k * 3 + 2];
-                    glm::vec3 p2 = currentCube[k * 3 + 1];
-                    glm::vec3 p3 = currentCube[k * 3 + 0];
+                    glm::vec3 p1 = vertices.at(cube[k * 3 + 2]).position;
+                    glm::vec3 p2 = vertices.at(cube[k * 3 + 1]).position;
+                    glm::vec3 p3 = vertices.at(cube[k * 3 + 0]).position;
                     glm::vec4 faceNormal = glm::vec4(glm::normalize(glm::cross((p3 - p1), (p2 - p1))), 1);
 
-                    if (withNormals) {
-                        normalMat.at((int)std::round((p1.x + (size / 2.0f)) * 2.0f),(int)std::round((p1.y + (size / 2.0f)) * 2.0f),(int)std::round((p1.z + (size / 2.0f)) * 2.0f)) += faceNormal;
-                        normalMat.at((int)std::round((p2.x + (size / 2.0f)) * 2.0f),(int)std::round((p2.y + (size / 2.0f)) * 2.0f),(int)std::round((p2.z + (size / 2.0f)) * 2.0f)) += faceNormal;
-                        normalMat.at((int)std::round((p3.x + (size / 2.0f)) * 2.0f),(int)std::round((p3.y + (size / 2.0f)) * 2.0f),(int)std::round((p3.z + (size / 2.0f)) * 2.0f)) += faceNormal;
-                    }
-                    else {
-                        normals.push_back(faceNormal);
-                        normals.push_back(faceNormal);
-                        normals.push_back(faceNormal);
-                    }
+                    vertices.at(cube[k*3]).normal = faceNormal;
+                    vertices.at(cube[k*3+1]).normal = faceNormal;
+                    vertices.at(cube[k*3+2]).normal = faceNormal;
+                    
                 }
-                currentCube.clear();
+                cube.clear();
 
             }
         }
     }
-
-    
-    if (withNormals) {
-        for (am::gfx::Vertex v : vertices) {
-            glm::vec4 sum = normalMat.at((int)std::round((v.position.x + (size / 2.0f)) * 2.0f),(int)std::round((v.position.y + (size / 2.0f)) * 2.0f),(int)std::round((v.position.z + (size / 2.0f)) * 2.0f));
-            glm::vec3 normal = glm::vec3(sum) / sum.w;
-            normals.push_back(glm::normalize(normal));
-        }
+    /*
+    for (auto vert : vertices) {
+        vert.normal = glm::normalize(vert.normal);
     }
+    */
+    auto m = new am::gfx::Mesh(vertices, indices, am::TRIANGLES);
+    if(opts["normals"] == am::SMOOTH)
+        m->recalculateNormals();
 
-    return new am::gfx::Mesh(vertices, indices, normals, GL_TRIANGLES);
+    return m;
 
 }
 
@@ -429,22 +442,13 @@ int MarchingCubesMeshBuilder::triTable[256][16] =
 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1} };
 
 
-glm::vec3 MarchingCubesMeshBuilder::interpolate(glm::vec3 first, glm::vec3 second, float size) {
+inline glm::vec3 MarchingCubesMeshBuilder::interpolate(glm::vec3 first, glm::vec3 second, float size) {
     glm::vec3 o = glm::vec3(-(size) / 2);
-
     glm::vec3 mid = (first + second) / 2.0f;
     return (o + mid);
 }
 
-std::vector<int> MarchingCubesMeshBuilder::reverse(int* arr) {
-    std::vector<int> res;
-    for (int i = 0; i < 16; i++) {
-        res.push_back(arr[15 - i]);
-    }
-    return res;
-}
-
-glm::vec4 MarchingCubesMeshBuilder::getColor(am::GridPoint a, am::GridPoint b, int colorMode, float isovalue) {
+inline glm::vec4 MarchingCubesMeshBuilder::getColor(am::GridPoint a, am::GridPoint b, int colorMode, float isovalue) {
     if (colorMode == am::MONO) {
         return { 0, 1, 0.5, 1 };
     }
