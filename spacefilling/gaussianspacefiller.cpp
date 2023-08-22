@@ -1,9 +1,9 @@
 #include "gaussianspacefiller.h"
 #include <iostream>
-am::Mat3D<am::GridPoint> GaussianSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts)
+am::math::Mat3D<am::pipeline::GridPoint> am::pipeline::GaussianSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts)
 {
 	int size = opts["size"];
-	am::Mat3D<am::GridPoint> volume(size, size, size, { am::bio::Atom(glm::vec3(0), ' ', 0), 0 });
+	am::math::Mat3D<am::pipeline::GridPoint> volume(size, size, size, { am::bio::Atom(glm::vec3(0), ' ', 0), 0 });
 
 	std::unordered_map<char, float> s_map;
 	std::unordered_map<char, float> sigma_map;

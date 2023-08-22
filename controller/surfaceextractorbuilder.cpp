@@ -1,5 +1,7 @@
 #include "surfaceextractorbuilder.h"
 
+using namespace am::pipeline::controller;
+
 SurfaceExtractorBuilder& SurfaceExtractorBuilder::setFileParser(FileParser* fp) {
 	m_parser = fp;
 	return *this;

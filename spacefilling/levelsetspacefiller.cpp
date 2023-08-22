@@ -1,6 +1,6 @@
 #include "levelsetspacefiller.h"
-
-am::Mat3D<am::GridPoint> LevelSetSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts)
+using namespace am::pipeline;
+am::math::Mat3D<GridPoint> LevelSetSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts)
 {
-	return am::Mat3D<am::GridPoint>(1,1,1);
+	return am::math::Mat3D<GridPoint>(1,1,1);
 }

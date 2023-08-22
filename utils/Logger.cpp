@@ -1,5 +1,6 @@
 #include "Logger.h"
 
+using namespace am::utils;
 
 Logger::Logger(std::string activity) {
 	m_activity = activity;

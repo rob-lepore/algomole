@@ -1,7 +1,9 @@
 #include "boundingboxpreprocessing.h"
 
+using namespace am::pipeline;
+
 std::vector<am::bio::Atom> BoundingBoxPreprocessing::transform(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
-	Logger log("Preprocessing");
+	utils::Logger log("Preprocessing");
 
 	float boxSize = opts["size"];
 	float probe = opts["probe_radius"];
@@ -39,7 +41,7 @@ std::vector<am::bio::Atom> BoundingBoxPreprocessing::transform(std::vector<am::b
 	std::vector<am::bio::Atom> scaled;
 	for (const auto& a : atoms) {
 		float radius;
-		if(surface == am::VDWS){
+		if(surface == options::VDWS){
 			radius = a.radius;
 		}
 		else {

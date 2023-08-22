@@ -2,11 +2,11 @@
 #include "../am.h"
 #include "../utils/mat3D.h"
 
-class SpaceFiller
+class am::pipeline::SpaceFiller
 {
 public:
 
     SpaceFiller() { };
-    virtual am::Mat3D<am::GridPoint> buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) = 0;
+    virtual am::math::Mat3D<GridPoint> buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) = 0;
 };
 

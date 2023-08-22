@@ -3,11 +3,11 @@
 #include "spacefiller.h"
 
 
-class GridSpaceFiller : public SpaceFiller
+class am::pipeline::GridSpaceFiller : public SpaceFiller
 {
 public:
 
-	am::Mat3D<am::GridPoint> buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts);
+	am::math::Mat3D<GridPoint> buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts);
 
 private:
 

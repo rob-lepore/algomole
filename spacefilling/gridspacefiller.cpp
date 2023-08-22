@@ -1,8 +1,8 @@
 #include "gridspacefiller.h"
 #include <iostream>
-am::Mat3D<am::GridPoint> GridSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
+am::math::Mat3D<am::pipeline::GridPoint> am::pipeline::GridSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
     int size = opts["size"];
-    am::Mat3D<am::GridPoint> volume(size, size, size);
+    am::math::Mat3D<am::pipeline::GridPoint> volume(size, size, size);
 
     glm::vec3 origin = glm::vec3(-size / 2);
 
@@ -34,7 +34,7 @@ am::Mat3D<am::GridPoint> GridSpaceFiller::buildVolume(std::vector<am::bio::Atom>
 
 }
 
-float GridSpaceFiller::dist2(glm::vec4 a, glm::vec4 b) {
+float am::pipeline::GridSpaceFiller::dist2(glm::vec4 a, glm::vec4 b) {
     float dx = a.x - b.x;
     float dy = a.y - b.y;
     float dz = a.z - b.z;

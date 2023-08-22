@@ -1,6 +1,6 @@
 #pragma once
 #include "../am.h"
-class FileParser
+class am::pipeline::FileParser
 {
 
 public:

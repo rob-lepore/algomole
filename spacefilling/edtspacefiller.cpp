@@ -1,34 +1,33 @@
 #include "edtspacefiller.h"
 #include "atomspacefiller.h"
 #include <thread>
-#include <future>
+
 #include <iostream>
 #include <queue>
 
-double euclideanDistance(const glm::vec3& p1, const glm::vec3& p2) {
+using namespace am::pipeline;
+
+double EDTSpaceFiller::euclideanDistance(const glm::vec3& p1, const glm::vec3& p2) {
 	double dx = p2.x - p1.x;
 	double dy = p2.y - p1.y;
 	double dz = p2.z - p1.z;
 	return std::sqrt (dx * dx + dy * dy + dz * dz);
 }
 
-struct Partial {
-	am::Mat3D<float> tEDT;
-	int index;
-};
 
-void func(std::promise<struct Partial>&& p, am::Mat3D<am::GridPoint> volume, int zi, int zf, int index) {
+
+void EDTSpaceFiller::func(std::promise<struct EDTSpaceFiller::Partial>&& p, am::math::Mat3D<GridPoint> volume, int zi, int zf, int index) {
 	float MAX = INFINITY;
-	am::Mat3D<float> tEDT(volume.width(), volume.height(), volume.depth(), -1);
+	am::math::Mat3D<float> tEDT(volume.width(), volume.height(), volume.depth(), -1);
 
 
 	for (int z = zi; z < zf; z++) {
-		am::Mat3D<float> R(volume.width(), volume.height(), 1);
-		am::Mat3D<float> B(volume.width(), volume.height(), 1);
-		am::Mat3D<float> L(volume.width(), volume.height(), 1);
-		am::Mat3D<float> F(volume.width(), volume.height(), 1);
-		am::Mat3D<float> LR(volume.width(), volume.height(), 1);
-		am::Mat3D<float> BF(volume.width(), volume.height(), 1);
+		am::math::Mat3D<float> R(volume.width(), volume.height(), 1);
+		am::math::Mat3D<float> B(volume.width(), volume.height(), 1);
+		am::math::Mat3D<float> L(volume.width(), volume.height(), 1);
+		am::math::Mat3D<float> F(volume.width(), volume.height(), 1);
+		am::math::Mat3D<float> LR(volume.width(), volume.height(), 1);
+		am::math::Mat3D<float> BF(volume.width(), volume.height(), 1);
 
 
 		for (int y = 0; y < volume.height(); y++) {
@@ -121,14 +120,14 @@ void func(std::promise<struct Partial>&& p, am::Mat3D<am::GridPoint> volume, int
 
 
 
-am::Mat3D<am::GridPoint> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
+am::math::Mat3D<GridPoint> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
 	float scale = opts["scaling_factor"];
 	float probe = opts["probe_radius"];
 
 	AtomSpaceFiller filler;
-	am::Mat3D<am::GridPoint> volume = filler.buildVolume(atoms, opts);
+	am::math::Mat3D<GridPoint> volume = filler.buildVolume(atoms, opts);
 
-	if (opts["surface"] == am::MS) {
+	if (opts["surface"] == options::MS) {
 
 		/*std::promise<am::Mat3D<float>> p;
 		auto f = p.get_future();
@@ -138,12 +137,12 @@ am::Mat3D<am::GridPoint> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom> 
 		std::cout << m.at(0,0,0) << "\n";*/
 
 		std::vector<std::thread> threads;
-		std::vector<std::future<struct Partial>> futures;
+		std::vector<std::future<struct EDTSpaceFiller::Partial>> futures;
 
 		int n_threads = opts["filling_threads"];
 		int range = volume.depth() / n_threads;
 		for (int i = 0; i < n_threads; ++i) {
-			std::promise<struct Partial> p;
+			std::promise<struct EDTSpaceFiller::Partial> p;
 			auto f = p.get_future();
 
 
@@ -155,7 +154,7 @@ am::Mat3D<am::GridPoint> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom> 
 			thread.join();
 		}
 
-		am::Mat3D<float> tEDT(volume.width(), volume.height(), volume.depth(), -1);
+		am::math::Mat3D<float> tEDT(volume.width(), volume.height(), volume.depth(), -1);
 
 		for (auto& f : futures) {
 			auto m = f.get();
@@ -172,7 +171,7 @@ am::Mat3D<am::GridPoint> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom> 
 
 
 		float MAX = INFINITY;
-		am::Mat3D<float> EDT(volume.width(), volume.height(), volume.depth(), MAX);
+		am::math::Mat3D<float> EDT(volume.width(), volume.height(), volume.depth(), MAX);
 		for (int x = 0; x < volume.width(); x++) {
 			for (int y = 0; y < volume.height(); y++) {
 				for (int z = 0; z < volume.depth(); z++) {

@@ -2,7 +2,7 @@
 #include "../am.h"
 #include <iostream>
 #include <chrono>
-class Logger
+class am::utils::Logger
 {
 public:
 	Logger(std::string activity);

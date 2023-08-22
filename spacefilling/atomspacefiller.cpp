@@ -1,14 +1,16 @@
 #include "atomspacefiller.h"
 #include <iostream>
 
-inline float dist2(glm::vec3 a, glm::vec3 b) {
+using namespace am::pipeline;
+
+inline float AtomSpaceFiller::dist2(glm::vec3 a, glm::vec3 b) {
     float dx = a.x - b.x;
     float dy = a.y - b.y;
     float dz = a.z - b.z;
     return ((dx * dx) + (dy * dy) + (dz * dz));
 }
 
-inline std::vector<glm::vec3> getPoints(glm::vec3 center, float r) {
+inline std::vector<glm::vec3> AtomSpaceFiller::getPoints(glm::vec3 center, float r) {
     glm::vec3 min = center - glm::vec3(r);
     glm::vec3 max = center + glm::vec3(r);
     std::vector<glm::vec3> points;
@@ -26,9 +28,9 @@ inline std::vector<glm::vec3> getPoints(glm::vec3 center, float r) {
 }
 
 
-am::Mat3D<am::GridPoint> AtomSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
+am::math::Mat3D<GridPoint> AtomSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
     int size = opts["size"];
-    am::Mat3D<am::GridPoint> volume(size, size, size, { am::bio::Atom(), 0 });
+    am::math::Mat3D<GridPoint> volume(size, size, size, { am::bio::Atom(), 0 });
 
     glm::vec3 origin = glm::vec3(-size / 2);
 

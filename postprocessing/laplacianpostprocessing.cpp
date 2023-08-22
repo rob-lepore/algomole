@@ -1,7 +1,7 @@
 #include "laplacianpostprocessing.h"
 #include "../gfx/mesh.h"
 
-am::gfx::Mesh* LaplacianPostprocessing::transform(am::gfx::Mesh* mesh, std::unordered_map<std::string, float>& opts)
+am::gfx::Mesh* am::pipeline::LaplacianPostprocessing::transform(am::gfx::Mesh* mesh, std::unordered_map<std::string, float>& opts)
 {
 	std::vector<am::gfx::Vertex> vertices = mesh->vertices;
 	for (int i = 0; i < vertices.size(); i++) {

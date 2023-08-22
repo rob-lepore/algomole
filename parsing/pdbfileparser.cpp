@@ -1,6 +1,8 @@
 #include "pdbfileparser.h"
 #include <string>
 
+using namespace am::pipeline;
+
 std::vector<am::bio::Atom> PdbFileParser::parse(std::string file, std::unordered_map<std::string, float>& opts) {
     std::string line;
     std::vector<am::bio::Atom> atoms;
@@ -23,7 +25,7 @@ std::vector<am::bio::Atom> PdbFileParser::parse(std::string file, std::unordered
             atoms.push_back(atom);
     }
 
-    Logger log("Parser");
+    am::utils::Logger log("Parser");
     log.log("# of atoms: " + std::to_string(atoms.size()));
     return atoms;
 }

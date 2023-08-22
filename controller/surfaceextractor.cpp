@@ -5,6 +5,8 @@
 
 #include <iostream>
 
+using namespace am::pipeline::controller;
+
 SurfaceExtractor::SurfaceExtractor(FileParser* fp, Preprocessing* p, SpaceFiller* sf, Mesher* mb, Postprocessing* post, std::unordered_map<std::string, float> opts) {
 	m_fileParser = fp;
 	m_pre = p;
@@ -17,14 +19,14 @@ SurfaceExtractor::SurfaceExtractor(FileParser* fp, Preprocessing* p, SpaceFiller
 
 am::gfx::Mesh* SurfaceExtractor::generateSurfaceMesh(std::string file) {
 
-	Logger log("Extractor");
+	am::utils::Logger log("Extractor");
 	//step 1
     std::vector<am::bio::Atom> parsed = m_fileParser->parse(file, m_opts);
     auto atoms = m_pre->transform(parsed, m_opts);
 
 	//step 2
 	log.startTimer();
-    am::Mat3D<am::GridPoint> grid = m_spacefiller->buildVolume(atoms, m_opts);
+    am::math::Mat3D<GridPoint> grid = m_spacefiller->buildVolume(atoms, m_opts);
 	log.logElapsedTime("Space filling");
 	//step 3
 	log.startTimer();

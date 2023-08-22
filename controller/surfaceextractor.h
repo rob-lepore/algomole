@@ -6,20 +6,20 @@
 #include "../preprocessing/preprocessing.h"
 #include "../postprocessing/postprocessing.h"
 
-class SurfaceExtractor
+class am::pipeline::controller::SurfaceExtractor
 {
 
 public:
 
-	SurfaceExtractor(FileParser*, Preprocessing*, SpaceFiller*, Mesher*, Postprocessing*, std::unordered_map<std::string, float>);
+	am::pipeline::controller::SurfaceExtractor(FileParser*, Preprocessing*, SpaceFiller*, Mesher*, Postprocessing*, std::unordered_map<std::string, float>);
 	am::gfx::Mesh* generateSurfaceMesh(std::string file);
 
 private:
-	FileParser* m_fileParser;
-	SpaceFiller* m_spacefiller;
-	Mesher* m_mesher;
-	Preprocessing* m_pre;
-	Postprocessing* m_post;
+	am::pipeline::FileParser* m_fileParser;
+	am::pipeline::SpaceFiller* m_spacefiller;
+	am::pipeline::Mesher* m_mesher;
+	am::pipeline::Preprocessing* m_pre;
+	am::pipeline::Postprocessing* m_post;
 	std::unordered_map<std::string, float> m_opts;
 	
 };

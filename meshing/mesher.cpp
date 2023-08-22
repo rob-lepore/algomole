@@ -1,3 +1,3 @@
 #include "mesher.h"
 
-Mesher::Mesher() { }
+am::pipeline::Mesher::Mesher() { }

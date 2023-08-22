@@ -2,7 +2,7 @@
 #include "surfaceextractor.h"
 
 
-class SurfaceExtractorBuilder
+class am::pipeline::controller::SurfaceExtractorBuilder
 {
 public:
 
@@ -17,11 +17,11 @@ public:
 
 
 private:
-	FileParser* m_parser;
-	Preprocessing* m_pre;
-	SpaceFiller* m_spacefiller;
-	Mesher* m_mesher;
-	Postprocessing* m_post;
+	am::pipeline::FileParser* m_parser;
+	am::pipeline::Preprocessing* m_pre;
+	am::pipeline::SpaceFiller* m_spacefiller;
+	am::pipeline::Mesher* m_mesher;
+	am::pipeline::Postprocessing* m_post;
 	std::unordered_map<std::string, float> m_opts;
 };
 

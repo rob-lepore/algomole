@@ -2,7 +2,7 @@
 #include "../am.h"
 #include "fileparser.h"
 #include "../utils/Logger.h"
-class PdbFileParser : public FileParser
+class am::pipeline::PdbFileParser : public am::pipeline::FileParser
 {
 public:
     std::vector<am::bio::Atom> parse(std::string file, std::unordered_map<std::string, float>&);

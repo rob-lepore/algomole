@@ -1,6 +1,4 @@
 #pragma once
-#include <Windows.h>
-#include <gl/GL.h>
 #include <map>
 #include <glm/glm.hpp>
 #include <fstream>
@@ -9,18 +7,9 @@
 #include <string>
 #include <algorithm>
 
-//typedef unsigned int GLenum;
-typedef unsigned char byte;
-
 namespace am{
 
-    enum SurfaceType { VDWS = 1, SAS = 2, MS = 3 };
-    enum ColorMode { ELEMENT, CHAIN, MONO };
-    enum Bool { AM_FALSE, AM_TRUE };
-    enum RenderMode { TRIANGLES = 4, POINTS = 0};
-    enum Effect {SMOOTH, SHARP};
-
-    namespace bio {
+    namespace bio { // ok
 
         const std::map<char, float> vdwRadii{
             {'C', 1.7},
@@ -32,7 +21,52 @@ namespace am{
             {'Y', 1.8}
         };
 
-        const std::map<char, glm::vec4> colors{
+        typedef struct Atom {
+            glm::vec3 position;
+            char element;
+            float radius;
+            char chainId;
+            Atom(glm::vec3 pos, char el, float r) {
+                position = pos;
+                element = el;
+                radius = r;
+                chainId = 0;
+            }
+            Atom(glm::vec3 pos, char el, float r, char chain) {
+                position = pos;
+                element = el;
+                radius = r;
+                chainId = chain;
+            }
+            Atom() {
+                Atom(glm::vec3(0), ' ', 0);
+            }
+        } Atom;
+
+    }
+
+    namespace gfx { // ok
+        class Mesh;
+
+        typedef struct Vertex {
+            glm::vec4 position;
+            glm::vec4 color;
+            glm::vec4 normal;
+
+            Vertex(glm::vec4 pos, glm::vec4 col) {
+                position = pos;
+                color = col;
+                normal = glm::vec4(0);
+            }
+
+            Vertex() {
+                position = glm::vec4(NAN);
+                color = glm::vec4(0);
+                normal = glm::vec4(0);
+            }
+        } Vertex;
+
+        const std::map<char, glm::vec4> elementColors{
             {'C', {0.15,0.4,0.3,1}},
             {'N', {0,0,1,1}},
             {'O', {1,0,0,1}},
@@ -70,62 +104,50 @@ namespace am{
             {'Y', {1, 0, 0.4, 1}},  // vivid red
             {'Z', {0.4, 0, 1, 1}}   // vivid purple
         };
-
-
-
-        typedef struct Atom {
-            glm::vec3 position;
-            char element;
-            float radius;
-            char chainId;
-            Atom(glm::vec3 pos, char el, float r) {
-                position = pos;
-                element = el;
-                radius = r;
-                chainId = 0;
-            }
-            Atom(glm::vec3 pos, char el, float r, char chain) {
-                position = pos;
-                element = el;
-                radius = r;
-                chainId = chain;
-            }
-            Atom() {
-                Atom(glm::vec3(0), ' ', 0);
-            }
-        } Atom;
-
-    }
-
-    typedef struct GridPoint {
-        am::bio::Atom atom;
-        float value;
-    } GridPoint;
-}
-
-namespace am{
-    namespace gfx {
-        class Mesh;
-        class ObjMeshVector;
-
-        typedef struct Vertex {
-            glm::vec4 position;
-            glm::vec4 color;
-            glm::vec4 normal;
-
-            Vertex(glm::vec4 pos, glm::vec4 col) {
-                position = pos;
-                color = col;
-                normal = glm::vec4(0);
-            }
-
-            Vertex() {
-                position = glm::vec4(NAN);
-                color = glm::vec4(0);
-                normal = glm::vec4(0);
-            }
-        } Vertex;
-
         
     }
+
+    namespace pipeline { // ok
+        namespace controller {
+            class SurfaceExtractor;
+            class SurfaceExtractorBuilder;
+        }
+        namespace options {
+            enum SurfaceType { VDWS = 1, SAS = 2, MS = 3 };
+            enum ColorMode { ELEMENT, CHAIN, MONO };
+            enum Bool { AM_FALSE, AM_TRUE };
+            enum RenderMode { TRIANGLES = 4, POINTS = 0 };
+            enum Normals { SMOOTH, SHARP };
+        }
+
+        typedef struct GridPoint {
+            am::bio::Atom atom;
+            float value;
+        } GridPoint;
+
+        class FileParser;
+        class PdbFileParser;
+
+        class Preprocessing;
+        class BoundingBoxPreprocessing;
+
+        class SpaceFiller;
+        class GridSpaceFiller;
+        class AtomSpaceFiller;
+        class EDTSpaceFiller;
+        class GaussianSpaceFiller;
+        class LevelSetSpaceFiller;
+
+        class Mesher;
+        class MarchingCubesMesher;
+
+        class Postprocessing;
+        class LaplacianPostprocessing;
+        class NonePostprocessing;
+    }
+
+    namespace utils {
+        class Logger;
+    }
+
 }

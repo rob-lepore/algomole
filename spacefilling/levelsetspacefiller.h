@@ -2,7 +2,7 @@
 
 #include "spacefiller.h"
 
-class LevelSetSpaceFiller : public SpaceFiller
+class am::pipeline::LevelSetSpaceFiller : public SpaceFiller
 {
-	virtual am::Mat3D<am::GridPoint> buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) override;
+	virtual am::math::Mat3D<GridPoint> buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) override;
 };

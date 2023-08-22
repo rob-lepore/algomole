@@ -2,10 +2,10 @@
 #include "../am.h"
 #include "../gfx/mesh.h"
 #include "../utils/mat3D.h"
-class Mesher
+class am::pipeline::Mesher
 {
 public:
 	Mesher();
-	virtual am::gfx::Mesh* buildMesh(am::Mat3D<am::GridPoint>&, std::unordered_map<std::string, float>& opts) = 0;
+	virtual am::gfx::Mesh* buildMesh(am::math::Mat3D<GridPoint>&, std::unordered_map<std::string, float>& opts) = 0;
 };
 

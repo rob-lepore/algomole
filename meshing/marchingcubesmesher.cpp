@@ -1,14 +1,9 @@
 #include "marchingcubesmesher.h"
 
-struct Vec3Hash {
-    std::size_t operator()(const glm::vec3& v) const {
-        // Implementa una funzione hash personalizzata per glm::vec3
-        // Puoi usare le funzioni hash standard come std::hash per le componenti x, y, z.
-        return std::hash<float>()(v.x) ^ std::hash<float>()(v.y) ^ std::hash<float>()(v.z);
-    }
-};
+using namespace am::pipeline;
 
-am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::GridPoint>& grid, std::unordered_map<std::string, float>& opts) {
+
+am::gfx::Mesh* MarchingCubesMesher::buildMesh(am::math::Mat3D<GridPoint>& grid, std::unordered_map<std::string, float>& opts) {
     std::vector<am::gfx::Vertex> vertices;
     std::vector<unsigned int> indices;
     std::unordered_map<glm::vec3, unsigned int, Vec3Hash> v_map;
@@ -102,7 +97,7 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::GridPoint>& gri
                     if (v != -1) {
 
                         glm::vec3 pos = { std::round(vertex.x * 2),std::round(vertex.y * 2),std::round(vertex.z * 2) };
-                        if (v_map.find(pos) != v_map.end() && opts["normals"] == am::SMOOTH) { // vertice già visto
+                        if (v_map.find(pos) != v_map.end() && opts["normals"] == options::SMOOTH) { // vertice già visto
                             unsigned int index = v_map[pos];
                             indices.push_back(index);
                             cube.push_back(index);
@@ -141,15 +136,15 @@ am::gfx::Mesh* MarchingCubesMeshBuilder::buildMesh(am::Mat3D<am::GridPoint>& gri
         vert.normal = glm::normalize(vert.normal);
     }
     */
-    auto m = new am::gfx::Mesh(vertices, indices, am::TRIANGLES);
-    if(opts["normals"] == am::SMOOTH)
+    auto m = new am::gfx::Mesh(vertices, indices, options::TRIANGLES);
+    if(opts["normals"] == options::SMOOTH)
         m->recalculateNormals();
 
     return m;
 
 }
 
-int MarchingCubesMeshBuilder::edgeTable[256] = {
+int MarchingCubesMesher::edgeTable[256] = {
 0x0  , 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
 0x80c, 0x905, 0xa0f, 0xb06, 0xc0a, 0xd03, 0xe09, 0xf00,
 0x190, 0x99 , 0x393, 0x29a, 0x596, 0x49f, 0x795, 0x69c,
@@ -183,7 +178,7 @@ int MarchingCubesMeshBuilder::edgeTable[256] = {
 0xf00, 0xe09, 0xd03, 0xc0a, 0xb06, 0xa0f, 0x905, 0x80c,
 0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x0 };
 
-int MarchingCubesMeshBuilder::triTable[256][16] =
+int MarchingCubesMesher::triTable[256][16] =
 { {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 {0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 {0, 1, 9, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
@@ -442,21 +437,21 @@ int MarchingCubesMeshBuilder::triTable[256][16] =
 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1} };
 
 
-inline glm::vec3 MarchingCubesMeshBuilder::interpolate(glm::vec3 first, glm::vec3 second, float size) {
+inline glm::vec3 MarchingCubesMesher::interpolate(glm::vec3 first, glm::vec3 second, float size) {
     glm::vec3 o = glm::vec3(-(size) / 2);
     glm::vec3 mid = (first + second) / 2.0f;
     return (o + mid);
 }
 
-inline glm::vec4 MarchingCubesMeshBuilder::getColor(am::GridPoint a, am::GridPoint b, int colorMode, float isovalue) {
-    if (colorMode == am::MONO) {
+inline glm::vec4 MarchingCubesMesher::getColor(GridPoint a, GridPoint b, int colorMode, float isovalue) {
+    if (colorMode == options::MONO) {
         return { 0, 1, 0.5, 1 };
     }
     if (b.value < isovalue) {
-        return colorMode == am::ELEMENT ? am::bio::colors.find(a.atom.element)->second : am::bio::chainColors.find(a.atom.chainId)->second;
+        return colorMode == options::ELEMENT ? am::gfx::elementColors.find(a.atom.element)->second : am::gfx::chainColors.find(a.atom.chainId)->second;
     }
     else if (a.value < isovalue)
-        return colorMode == am::ELEMENT ? am::bio::colors.find(b.atom.element)->second : am::bio::chainColors.find(b.atom.chainId)->second;
+        return colorMode == options::ELEMENT ? am::gfx::elementColors.find(b.atom.element)->second : am::gfx::chainColors.find(b.atom.chainId)->second;
     else {
         std::cout << "errore \n";
         return glm::vec4(0.5);
