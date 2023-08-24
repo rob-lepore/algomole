@@ -9,18 +9,28 @@ namespace am{
         {
 
         public:
-            Mesh(std::vector<Vertex>, std::vector<unsigned int>, am::RenderMode);
+            Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, am::pipeline::options::RenderMode mode);
+            Mesh(am::pipeline::options::RenderMode mode);
             Mesh();
 
-            std::set<unsigned int> connectedVertices(unsigned int vertex);
             void recalculateNormals();
             void toObjFile(std::string path);
 
+            void addVertex(Vertex v);
+            void addFace(unsigned int a,unsigned int b,unsigned int c);
 
-            std::vector<Vertex> vertices;
-            std::vector<unsigned int> indices;
+            const std::vector<Vertex>& getVertices();
+            const std::vector<unsigned int>& getIndices();
+            const am::pipeline::options::RenderMode& getRenderMode();
+            std::set<unsigned int> connectedVertices(unsigned int vertex);
 
-            am::RenderMode m_renderMode;
+        private:
+
+            std::vector<Vertex> m_vertices;
+            std::vector<unsigned int> m_indices;
+            std::map<unsigned int, std::set<unsigned int>> m_adjacency;
+
+            am::pipeline::options::RenderMode m_renderMode;
 
         };
     }

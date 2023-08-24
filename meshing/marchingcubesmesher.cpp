@@ -9,6 +9,8 @@ am::gfx::Mesh* MarchingCubesMesher::buildMesh(am::math::Mat3D<GridPoint>& grid, 
     std::unordered_map<glm::vec3, unsigned int, Vec3Hash> v_map;
     unsigned i = 0;
 
+    am::gfx::Mesh* m = new am::gfx::Mesh();
+
     int size = opts["size"]; 
     bool withNormals = opts["with_normals"];
     int mode = opts["color_mode"];
@@ -16,12 +18,10 @@ am::gfx::Mesh* MarchingCubesMesher::buildMesh(am::math::Mat3D<GridPoint>& grid, 
 
     glm::vec3 o = glm::vec3(-size / 2);
 
-    // Iterate over each cell in the grid
-    for (int x = 0; x < size - 1; ++x) {
-        for (int y = 0; y < size - 1; ++y) {
-            for (int z = 0; z < size - 1; ++z) {
-                // Determine the configuration index based on the voxel values
-                //std::cout << grid.at(x, y, z).atom.element << "\n";
+    for (int x = 0; x < size - 1; x++) {
+        for (int y = 0; y < size - 1; y++) {
+            for (int z = 0; z < size - 1; z++) {
+
                 int configIndex = 0;
                 if (grid.at(x,y,z).value < isolevel) configIndex |= 1;
                 if (grid.at(x+1, y, z).value < isolevel) configIndex |= 2;
@@ -97,16 +97,14 @@ am::gfx::Mesh* MarchingCubesMesher::buildMesh(am::math::Mat3D<GridPoint>& grid, 
                     if (v != -1) {
 
                         glm::vec3 pos = { std::round(vertex.x * 2),std::round(vertex.y * 2),std::round(vertex.z * 2) };
-                        if (v_map.find(pos) != v_map.end() && opts["normals"] == options::SMOOTH) { // vertice già visto
+                        if (v_map.find(pos) != v_map.end() && opts["normals"] == options::SMOOTH) {
                             unsigned int index = v_map[pos];
-                            indices.push_back(index);
                             cube.push_back(index);
                         }
-                        else {                                // vertice nuovo
-                            unsigned int index = vertices.size();
+                        else { // new vertex
+                            unsigned int index = m->getVertices().size();
                             v_map[pos] = index;
-                            indices.push_back(index);
-                            vertices.push_back({ glm::vec4(vertex,1), color });
+                            m->addVertex({ glm::vec4(vertex,1), color });
                             cube.push_back(index);
 
                         }
@@ -116,29 +114,14 @@ am::gfx::Mesh* MarchingCubesMesher::buildMesh(am::math::Mat3D<GridPoint>& grid, 
                                 
                 int n = cube.size() / 3;
                 for (int k = 0; k < n; k++) {
-                    glm::vec3 p1 = vertices.at(cube[k * 3 + 2]).position;
-                    glm::vec3 p2 = vertices.at(cube[k * 3 + 1]).position;
-                    glm::vec3 p3 = vertices.at(cube[k * 3 + 0]).position;
-                    glm::vec4 faceNormal = glm::vec4(glm::normalize(glm::cross((p3 - p1), (p2 - p1))), 1);
-
-                    vertices.at(cube[k*3]).normal = faceNormal;
-                    vertices.at(cube[k*3+1]).normal = faceNormal;
-                    vertices.at(cube[k*3+2]).normal = faceNormal;
-                    
+                    m->addFace(cube[k * 3], cube[k * 3 + 1], cube[k * 3 + 2]);
                 }
                 cube.clear();
 
             }
         }
     }
-    /*
-    for (auto vert : vertices) {
-        vert.normal = glm::normalize(vert.normal);
-    }
-    */
-    auto m = new am::gfx::Mesh(vertices, indices, options::TRIANGLES);
-    if(opts["normals"] == options::SMOOTH)
-        m->recalculateNormals();
+    m->recalculateNormals();
 
     return m;
 
@@ -445,7 +428,7 @@ inline glm::vec3 MarchingCubesMesher::interpolate(glm::vec3 first, glm::vec3 sec
 
 inline glm::vec4 MarchingCubesMesher::getColor(GridPoint a, GridPoint b, int colorMode, float isovalue) {
     if (colorMode == options::MONO) {
-        return { 0, 1, 0.5, 1 };
+        return { 0, 1, 0.3, 1 };
     }
     if (b.value < isovalue) {
         return colorMode == options::ELEMENT ? am::gfx::elementColors.find(a.atom.element)->second : am::gfx::chainColors.find(a.atom.chainId)->second;

@@ -1,9 +1,9 @@
 #include "laplacianpostprocessing.h"
 #include "../gfx/mesh.h"
-
+#include "iostream"
 am::gfx::Mesh* am::pipeline::LaplacianPostprocessing::transform(am::gfx::Mesh* mesh, std::unordered_map<std::string, float>& opts)
 {
-	std::vector<am::gfx::Vertex> vertices = mesh->vertices;
+	std::vector<am::gfx::Vertex> vertices = mesh->getVertices();
 	for (int i = 0; i < vertices.size(); i++) {
 		am::gfx::Vertex current = vertices[i];
 		std::set<unsigned int> connected = mesh->connectedVertices(i);
@@ -15,9 +15,8 @@ am::gfx::Mesh* am::pipeline::LaplacianPostprocessing::transform(am::gfx::Mesh* m
 		newPosition /= connected.size();
 		vertices[i].position = current.position + 1.f * (newPosition - current.position);
 	}
-	mesh->vertices = vertices;
-	
-	mesh->recalculateNormals();
+	am::gfx::Mesh* m = new am::gfx::Mesh(vertices, mesh->getIndices(), mesh->getRenderMode());
+	m->recalculateNormals();
 
-	return mesh;
+	return m;
 }
