@@ -1,5 +1,6 @@
 #include "edtspacefiller.h"
 #include "atomspacefiller.h"
+#include "../exceptions/optionexception.h"
 #include <thread>
 
 #include <iostream>
@@ -121,13 +122,24 @@ void EDTSpaceFiller::func(std::promise<struct EDTSpaceFiller::Partial>&& p, am::
 
 
 am::math::Mat3D<GridPoint> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
-	float scale = opts["scaling_factor"];
-	float probe = opts["probe_radius"];
+	float scale;
+	float probe;
+	float surface;
+	int n_threads;
+	try {
+		scale = options::getOptionWithError(opts, "scaling_factor");
+		probe = options::getOptionWithError(opts, "probe_radius");
+		surface = options::getOptionWithError(opts, "surface");
+		n_threads = options::getOption(opts, "filling_threads", 8);
+	}
+	catch (options::OptionException& e) {
+		throw e;
+	}
 
 	AtomSpaceFiller filler;
 	am::math::Mat3D<GridPoint> volume = filler.buildVolume(atoms, opts);
 
-	if (opts["surface"] == options::MS) {
+	if (surface == options::MS) {
 
 		/*std::promise<am::Mat3D<float>> p;
 		auto f = p.get_future();
@@ -139,12 +151,10 @@ am::math::Mat3D<GridPoint> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom
 		std::vector<std::thread> threads;
 		std::vector<std::future<struct EDTSpaceFiller::Partial>> futures;
 
-		int n_threads = opts["filling_threads"];
 		int range = volume.depth() / n_threads;
 		for (int i = 0; i < n_threads; ++i) {
 			std::promise<struct EDTSpaceFiller::Partial> p;
 			auto f = p.get_future();
-
 
 			threads.emplace_back(&func, std::move(p), volume, range * i, range * (i + 1), i);
 			futures.push_back(std::move(f));
@@ -158,7 +168,6 @@ am::math::Mat3D<GridPoint> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom
 
 		for (auto& f : futures) {
 			auto m = f.get();
-			std::cout << m.index << "\n";
 
 			for (int z = range * m.index; z < range * (m.index + 1); z++) {
 				for (int x = 0; x < volume.width(); x++) {
@@ -210,7 +219,7 @@ am::math::Mat3D<GridPoint> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom
 					}
 
 					if (EDT.at(x, y, z) < (probe * scale) * (probe * scale)) volume.at(x, y, z).value = 0;
-					else volume.at(x, y, z).value = 1;// opts["isovalue"];
+					else volume.at(x, y, z).value = 1;
 
 				}
 			}

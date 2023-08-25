@@ -1,13 +1,19 @@
 #include "boundingboxpreprocessing.h"
-
+#include "../exceptions/optionexception.h"
 using namespace am::pipeline;
 
 std::vector<am::bio::Atom> BoundingBoxPreprocessing::transform(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
 	utils::Logger log("Preprocessing");
-
-	float boxSize = opts["size"];
-	float probe = opts["probe_radius"];
-	float surface = opts["surface"];
+	float boxSize, probe, surface;
+	try {
+		 boxSize = options::getOptionWithError(opts, "size");
+		 probe = options::getOption(opts, "probe_radius", 1.4);
+		 surface = options::getOption(opts, "surface", options::VDWS);
+	}
+	catch(options::OptionException &e) {
+		throw e;
+	} 
+	
 
 	// Find molecule bounding box
 	glm::vec3 minValues = atoms[0].position;

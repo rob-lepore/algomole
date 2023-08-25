@@ -118,6 +118,15 @@ namespace am{
             enum Bool { AM_FALSE, AM_TRUE };
             enum RenderMode { TRIANGLES = 4, POINTS = 0 };
             enum Normals { SMOOTH, SHARP };
+
+            float getOption(std::unordered_map<std::string, float>& options, std::string key, float defaultValue);
+            float getOptionWithError(std::unordered_map<std::string, float>& options, std::string key);
+            void assertOptionValue(std::unordered_map<std::string, float>& options, std::string key, float value);
+
+            class OptionException;
+            class MissingOptionException;
+            class InvalidOptionException;
+
         }
 
         typedef struct GridPoint {

@@ -1,5 +1,5 @@
 #include "marchingcubesmesher.h"
-
+#include "../exceptions/optionexception.h"
 using namespace am::pipeline;
 
 
@@ -8,13 +8,21 @@ am::gfx::Mesh* MarchingCubesMesher::buildMesh(am::math::Mat3D<GridPoint>& grid, 
     std::vector<unsigned int> indices;
     std::unordered_map<glm::vec3, unsigned int, Vec3Hash> v_map;
     unsigned i = 0;
+    int size, mode, normals;
+    float isolevel;
+
+    try {
+        size = options::getOptionWithError(opts, "size");
+        normals = options::getOption(opts, "normals", options::SMOOTH);
+        mode = options::getOption(opts, "color_mode", options::MONO);
+        isolevel = options::getOption(opts, "isovalue", 1.f);
+    }
+    catch (options::OptionException& e) {
+        throw e;
+    }
 
     am::gfx::Mesh* m = new am::gfx::Mesh();
 
-    int size = opts["size"]; 
-    bool withNormals = opts["with_normals"];
-    int mode = opts["color_mode"];
-    float isolevel = opts["isovalue"];
 
     glm::vec3 o = glm::vec3(-size / 2);
 
@@ -97,7 +105,7 @@ am::gfx::Mesh* MarchingCubesMesher::buildMesh(am::math::Mat3D<GridPoint>& grid, 
                     if (v != -1) {
 
                         glm::vec3 pos = { std::round(vertex.x * 2),std::round(vertex.y * 2),std::round(vertex.z * 2) };
-                        if (v_map.find(pos) != v_map.end() && opts["normals"] == options::SMOOTH) {
+                        if (v_map.find(pos) != v_map.end() && normals == options::SMOOTH) {
                             unsigned int index = v_map[pos];
                             cube.push_back(index);
                         }

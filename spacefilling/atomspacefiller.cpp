@@ -1,4 +1,5 @@
 #include "atomspacefiller.h"
+#include "../exceptions/optionexception.h"
 #include <iostream>
 
 using namespace am::pipeline;
@@ -29,7 +30,14 @@ inline std::vector<glm::vec3> AtomSpaceFiller::getPoints(glm::vec3 center, float
 
 
 am::math::Mat3D<GridPoint> AtomSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
-    int size = opts["size"];
+    int size;
+    try {
+        size = options::getOptionWithError(opts, "size");
+    }
+    catch (options::OptionException& e) {
+        throw e;
+    }
+
     am::math::Mat3D<GridPoint> volume(size, size, size, { am::bio::Atom(), 0 });
 
     glm::vec3 origin = glm::vec3(-size / 2);

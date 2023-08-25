@@ -20,20 +20,27 @@ SurfaceExtractor::SurfaceExtractor(FileParser* fp, Preprocessing* p, SpaceFiller
 am::gfx::Mesh* SurfaceExtractor::generateSurfaceMesh(std::string file) {
 
 	am::utils::Logger log("Extractor");
-	//step 1
-    std::vector<am::bio::Atom> parsed = m_fileParser->parse(file, m_opts);
-    auto atoms = m_pre->transform(parsed, m_opts);
 
-	//step 2
-	log.startTimer();
-    am::math::Mat3D<GridPoint> grid = m_spacefiller->buildVolume(atoms, m_opts);
-	log.logElapsedTime("Space filling");
-	//step 3
-	log.startTimer();
-    am::gfx::Mesh* mesh = m_mesher->buildMesh(grid, m_opts);
-	log.logElapsedTime("Meshing");
+	try {
+		//step 1
+		std::vector<am::bio::Atom> parsed = m_fileParser->parse(file, m_opts);
+		auto atoms = m_pre->transform(parsed, m_opts);
 
-	//step 4
-	am::gfx::Mesh* result = m_post->transform(mesh, m_opts);
-    return result;
+		//step 2
+		log.startTimer();
+		am::math::Mat3D<GridPoint> grid = m_spacefiller->buildVolume(atoms, m_opts);
+		log.logElapsedTime("Space filling");
+		//step 3
+		log.startTimer();
+		am::gfx::Mesh* mesh = m_mesher->buildMesh(grid, m_opts);
+		log.logElapsedTime("Meshing");
+
+		//step 4
+		am::gfx::Mesh* result = m_post->transform(mesh, m_opts);
+		return result;
+	}
+	catch(std::exception &e) {
+		std::cerr << e.what();
+		return new am::gfx::Mesh();
+	}
 }

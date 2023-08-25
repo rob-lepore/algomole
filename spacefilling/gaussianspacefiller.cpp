@@ -1,15 +1,25 @@
 #include "gaussianspacefiller.h"
+#include "../exceptions/optionexception.h"
 #include <iostream>
 am::math::Mat3D<am::pipeline::GridPoint> am::pipeline::GaussianSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts)
 {
-	int size = opts["size"];
+	int size;
+	float rp;
+
+	try {
+		size = options::getOptionWithError(opts, "size");
+		rp = options::getOptionWithError(opts, "probe_radius") * options::getOptionWithError(opts, "scaling_factor");
+		options::assertOptionValue(opts, "surface", options::VDWS);
+	}
+	catch (options::OptionException& e) {
+		throw e;
+	}
+
 	am::math::Mat3D<am::pipeline::GridPoint> volume(size, size, size, { am::bio::Atom(glm::vec3(0), ' ', 0), 0 });
 
 	std::unordered_map<char, float> s_map;
 	std::unordered_map<char, float> sigma_map;
 
-
-	float rp = opts["probe_radius"] * opts["scaling_factor"];
 	float ln2 = std::log(2);
 	for (const auto& atom : atoms)
 	{

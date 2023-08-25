@@ -1,7 +1,14 @@
 #include "gridspacefiller.h"
+#include "../exceptions/optionexception.h"
 #include <iostream>
 am::math::Mat3D<am::pipeline::GridPoint> am::pipeline::GridSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
-    int size = opts["size"];
+    int size;
+    try {
+        size = options::getOptionWithError(opts, "size");
+    }
+    catch (options::OptionException& e) {
+        throw e;
+    }
     am::math::Mat3D<am::pipeline::GridPoint> volume(size, size, size);
 
     glm::vec3 origin = glm::vec3(-size / 2);
