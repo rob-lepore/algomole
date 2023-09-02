@@ -5,6 +5,8 @@
 #include <iostream>
 
 
+
+
 float am::pipeline::options::getOption(std::unordered_map<std::string, float>& options, std::string key, float defaultValue) {
 	if (options.find(key) != options.end()) {
 		return options[key];
@@ -32,3 +34,6 @@ void am::pipeline::options::assertOptionValue(std::unordered_map<std::string, fl
 		throw InvalidOptionException(key, value);
 	}
 }
+
+
+

@@ -12,11 +12,11 @@ namespace am{
     namespace bio { // ok
 
         const std::map<char, float> vdwRadii{
-            {'C', 1.7},
-            {'N', 1.5},
-            {'O', 1.5},
-            {'S', 1.8},
-            {'P', 1.8},
+            {'C', 1.88},
+            {'N', 1.64},
+            {'O', 1.42},
+            {'S', 1.77},
+            {'P', 1.87},
             {'X', 2.1},
             {'Y', 1.8}
         };
@@ -111,6 +111,7 @@ namespace am{
         namespace controller {
             class SurfaceExtractor;
             class SurfaceExtractorBuilder;
+            class Director;
         }
         namespace options {
             enum SurfaceType { VDWS = 1, SAS = 2, MS = 3 };
@@ -118,6 +119,7 @@ namespace am{
             enum Bool { AM_FALSE, AM_TRUE };
             enum RenderMode { TRIANGLES = 4, POINTS = 0 };
             enum Normals { SMOOTH, SHARP };
+            enum Logging { NO, MINIMAL, VERBOSE};
 
             float getOption(std::unordered_map<std::string, float>& options, std::string key, float defaultValue);
             float getOptionWithError(std::unordered_map<std::string, float>& options, std::string key);
@@ -157,6 +159,8 @@ namespace am{
 
     namespace utils {
         class Logger;
+        class CgalUtils;
+        class Validator;
     }
 
 }

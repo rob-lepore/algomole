@@ -42,7 +42,8 @@ std::vector<am::bio::Atom> BoundingBoxPreprocessing::transform(std::vector<am::b
 
 	glm::vec3 centroid = (maxValues + minValues) / 2.0f;
 
-	log.log("Scaling factor: " + std::to_string(scaleFactor) + "  Centroid: " + log.vec3(centroid) + "  Space size: " + std::to_string(size));
+	if (opts["log"] == options::VERBOSE)
+		log.log("Scaling factor: " + std::to_string(scaleFactor) + "  Centroid: " + log.vec3(centroid) + "  Space size: " + std::to_string(size));
 
 	std::vector<am::bio::Atom> scaled;
 	for (const auto& a : atoms) {

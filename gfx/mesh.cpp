@@ -116,3 +116,40 @@ void Mesh::addFace(unsigned int a, unsigned int b, unsigned int c) {
     m_adjacency[c].insert({ a, b });
 
 }
+
+
+double Mesh::surfaceArea(float scale) {
+    if (m_area < 0) {
+        m_area = 0;
+        for (int i = 0; i < m_indices.size(); i += 3) {
+            glm::vec3 AB = m_vertices[m_indices[i + 1]].position - m_vertices[m_indices[i]].position;
+            glm::vec3 AC = m_vertices[m_indices[i + 2]].position - m_vertices[m_indices[i]].position;
+            glm::vec3 crossProduct = glm::cross(AB, AC);
+            m_area += 0.5 * glm::length(crossProduct);
+        }
+        m_area /= (scale * scale);
+    }
+    return m_area;
+}
+
+
+double Mesh::volume(float scale) {
+    if (m_volume < 0) {
+        m_volume = 0;
+        for (int i = 0; i < m_indices.size(); i += 3) {
+            glm::vec3 p1 = m_vertices[m_indices[i + 0]].position;
+            glm::vec3 p2 = m_vertices[m_indices[i + 1]].position;
+            glm::vec3 p3 = m_vertices[m_indices[i + 2]].position;
+
+            float v321 = p3.x * p2.y * p1.z;
+            float v231 = p2.x * p3.y * p1.z;
+            float v312 = p3.x * p1.y * p2.z;
+            float v132 = p1.x * p3.y * p2.z;
+            float v213 = p2.x * p1.y * p3.z;
+            float v123 = p1.x * p2.y * p3.z;
+            m_volume += (1.0f / 6.0f) * (-v321 + v231 + v312 - v132 - v213 + v123);
+        }
+        m_volume /= (scale * scale * scale);
+    }
+    return m_volume;
+}

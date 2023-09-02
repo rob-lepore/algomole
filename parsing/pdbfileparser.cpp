@@ -26,7 +26,7 @@ std::vector<am::bio::Atom> PdbFileParser::parse(std::string file, std::unordered
     }
 
     am::utils::Logger log("Parser");
-    log.log("# of atoms: " + std::to_string(atoms.size()));
+    if (opts["log"] == options::VERBOSE) log.log("# of atoms: " + std::to_string(atoms.size()));
     return atoms;
 }
 
