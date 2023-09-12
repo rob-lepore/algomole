@@ -8,19 +8,12 @@ am::gfx::Mesh* MarchingCubesMesher::buildMesh(am::math::Mat3D<GridPoint>& grid, 
     std::vector<unsigned int> indices;
     std::unordered_map<glm::vec3, unsigned int, Vec3Hash> v_map;
     unsigned i = 0;
-    int size, mode, normals;
-    float isolevel;
 
-    try {
-        size = options::getOptionWithError(opts, "size");
-        normals = options::getOption(opts, "normals", options::SMOOTH);
-        mode = options::getOption(opts, "color_mode", options::MONO);
-        isolevel = options::getOption(opts, "isovalue", 1.f);
-    }
-    catch (options::OptionException& e) {
-        throw e;
-    }
-
+    int size = options::getOptionWithError(opts, "size");
+    int normals = options::getOption(opts, "normals", options::SMOOTH);
+    int mode = options::getOption(opts, "color_mode", options::MONO);
+    float isolevel = options::getOption(opts, "isovalue", 1.f);
+    
     am::gfx::Mesh* m = new am::gfx::Mesh();
 
 
@@ -134,7 +127,7 @@ am::gfx::Mesh* MarchingCubesMesher::buildMesh(am::math::Mat3D<GridPoint>& grid, 
     return m;
 
 }
-
+/*
 int MarchingCubesMesher::edgeTable[256] = {
 0x0  , 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
 0x80c, 0x905, 0xa0f, 0xb06, 0xc0a, 0xd03, 0xe09, 0xf00,
@@ -168,7 +161,7 @@ int MarchingCubesMesher::edgeTable[256] = {
 0x69c, 0x795, 0x49f, 0x596, 0x29a, 0x393, 0x99 , 0x190,
 0xf00, 0xe09, 0xd03, 0xc0a, 0xb06, 0xa0f, 0x905, 0x80c,
 0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x0 };
-
+*/
 int MarchingCubesMesher::triTable[256][16] =
 { {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 {0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
@@ -428,13 +421,13 @@ int MarchingCubesMesher::triTable[256][16] =
 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1} };
 
 
-inline glm::vec3 MarchingCubesMesher::interpolate(glm::vec3 first, glm::vec3 second, float size) {
+inline glm::vec3 MarchingCubesMesher::interpolate(const glm::vec3& first, const glm::vec3& second, float size) {
     glm::vec3 o = glm::vec3(-(size) / 2);
     glm::vec3 mid = (first + second) / 2.0f;
     return (o + mid);
 }
 
-inline glm::vec4 MarchingCubesMesher::getColor(GridPoint a, GridPoint b, int colorMode, float isovalue) {
+inline glm::vec4 MarchingCubesMesher::getColor(const GridPoint& a, const GridPoint& b, int colorMode, float isovalue) {
     if (colorMode == options::MONO) {
         return { 0, 1, 0.3, 1 };
     }

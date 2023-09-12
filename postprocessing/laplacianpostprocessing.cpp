@@ -25,6 +25,6 @@ am::gfx::Mesh* am::pipeline::LaplacianPostprocessing::transform(am::gfx::Mesh* m
 	am::gfx::Mesh* m = new am::gfx::Mesh(vertices, mesh->getIndices(), mesh->getRenderMode());
 	m->recalculateNormals();
 
-
+	delete mesh;
 	return m;
 }

@@ -16,14 +16,16 @@ am::gfx::Mesh* AlphaWrapMesher::buildMesh(am::math::Mat3D<am::pipeline::GridPoin
     Point_container points;
 
     int size = am::pipeline::options::getOptionWithError(opts, "size");
-    const double relative_alpha = am::pipeline::options::getOption(opts, "relative_alpha", 150);
-    const double relative_offset = am::pipeline::options::getOption(opts, "relative_offset", 150);
+    const double relative_alpha = am::pipeline::options::getOption(opts, "relative_alpha", 100);
+    const double relative_offset = am::pipeline::options::getOption(opts, "relative_offset", 500);
+    float value = am::pipeline::options::getOption(opts, "isovalue", 1);
+
 
     int o = -size / 2;
     for (int i = 0; i < volume.width(); i++) {
         for (int j = 0; j < volume.width(); j++) {
             for (int k = 0; k < volume.width(); k++) {
-                if (volume.at(i, j, k).value >= 1) {
+                if (volume.at(i, j, k).value >= value) {
                     points.push_back(Point_3(o + i, o + j, o + k));
                 }
             }

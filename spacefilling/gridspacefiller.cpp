@@ -27,7 +27,9 @@ am::math::Mat3D<am::pipeline::GridPoint> am::pipeline::GridSpaceFiller::buildVol
                     // check if it is inside an atom
                     float radius = atom.radius; 
                     if (d < radius * radius) {
-                        volume.at(i, j, k) = { am::bio::Atom(atom.position, atom.element, atom.radius, atom.chainId), 1 };
+                        //volume.at(i, j, k) = { am::bio::Atom(atom.position, atom.element, atom.radius, atom.chainId), 1 };
+                        volume.at(i, j, k).atom = am::bio::Atom(atom.position, atom.element, atom.radius, atom.chainId);
+                        volume.at(i, j, k).value = 1;
                         break;
                     }
                 }

@@ -39,6 +39,7 @@ am::gfx::Mesh* SurfaceExtractor::generateSurfaceMesh(std::string file) {
 
 		//step 4
 		am::gfx::Mesh* result = m_post->transform(mesh, m_opts);
+
 		result->surfaceArea(m_opts["scaling_factor"]);
 		result->volume(m_opts["scaling_factor"]);
 

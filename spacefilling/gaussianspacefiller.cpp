@@ -6,15 +6,10 @@ am::math::Mat3D<am::pipeline::GridPoint> am::pipeline::GaussianSpaceFiller::buil
 	int size;
 	float rp;
 
-	try {
-		size = options::getOptionWithError(opts, "size");
-		rp = options::getOptionWithError(opts, "probe_radius") * options::getOptionWithError(opts, "scaling_factor");
-		options::assertOptionValue(opts, "surface", options::VDWS);
-	}
-	catch (options::OptionException& e) {
-		throw e;
-	}
-
+	size = options::getOptionWithError(opts, "size");
+	rp = options::getOptionWithError(opts, "probe_radius") * options::getOptionWithError(opts, "scaling_factor");
+	options::assertOptionValue(opts, "surface", options::VDWS);
+	
 	am::math::Mat3D<am::pipeline::GridPoint> volume(size, size, size, { am::bio::Atom(glm::vec3(0), ' ', 0), 0 });
 
 	std::unordered_map<char, float> s_map;
@@ -28,7 +23,7 @@ am::math::Mat3D<am::pipeline::GridPoint> am::pipeline::GaussianSpaceFiller::buil
 		int sigma;
 
 
-		if (s_map[atom.element] != 0.f) {
+		if (s_map.find(atom.element) != s_map.end()){
 			s_2 = s_map[atom.element];
 			sigma = sigma_map[atom.element];
 		}
@@ -58,6 +53,7 @@ am::math::Mat3D<am::pipeline::GridPoint> am::pipeline::GaussianSpaceFiller::buil
 		}
 	}
 
+	opts["isovalue"] = 1.f;
 
 	return volume;
 }

@@ -1,7 +1,9 @@
 #include "edtspacefiller.h"
 #include "atomspacefiller.h"
+#include "gridspacefiller.h"
 #include "../exceptions/optionexception.h"
 #include <thread>
+#include "../utils/Logger.h"
 
 #include <iostream>
 #include <queue>
@@ -20,7 +22,6 @@ double EDTSpaceFiller::euclideanDistance(const glm::vec3& p1, const glm::vec3& p
 void EDTSpaceFiller::func(std::promise<struct EDTSpaceFiller::Partial>&& p, am::math::Mat3D<GridPoint> volume, int zi, int zf, int index) {
 	float MAX = INFINITY;
 	am::math::Mat3D<float> tEDT(volume.width(), volume.height(), volume.depth(), -1);
-
 
 	for (int z = zi; z < zf; z++) {
 		am::math::Mat3D<float> R(volume.width(), volume.height(), 1);
@@ -68,10 +69,10 @@ void EDTSpaceFiller::func(std::promise<struct EDTSpaceFiller::Partial>&& p, am::
 				else {
 
 					glm::vec3 n;
-					if(x>0) n = glm::vec3(x - 1, y, z);
-					else if (y>0) n = glm::vec3(x, y-1, z);
+					if (y>0) n = glm::vec3(x, y-1, z);
+					else if (x > 0) n = glm::vec3(x - 1, y, z);
 
-					if ((x>0 || y>0) && tEDT.at(n.x, n.y, n.z) >= 0)//n != glm::vec3(-1))
+					if ((x>0 || y>0) && tEDT.at(n.x, n.y, n.z) >= 0)
 					{
 						float r0 = std::sqrt( tEDT.at(n.x, n.y, n.z));
 
@@ -98,6 +99,7 @@ void EDTSpaceFiller::func(std::promise<struct EDTSpaceFiller::Partial>&& p, am::
 							for (int j = 0; j < volume.height(); j++) {
 								value = std::min(value, LR.at(x, j, 0) + (y - j) * (y - j));
 							}
+							//std::cout << value << " " << x << " " << y << " " << r0 << "\n";
 						}
 						tEDT.at(x, y, z) = value;
 
@@ -122,24 +124,18 @@ void EDTSpaceFiller::func(std::promise<struct EDTSpaceFiller::Partial>&& p, am::
 
 
 am::math::Mat3D<GridPoint> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
-	float scale;
-	float probe;
-	float surface;
-	int n_threads;
-	try {
-		scale = options::getOptionWithError(opts, "scaling_factor");
-		probe = options::getOptionWithError(opts, "probe_radius");
-		surface = options::getOptionWithError(opts, "surface");
-		n_threads = options::getOption(opts, "filling_threads", 8);
-	}
-	catch (options::OptionException& e) {
-		throw e;
-	}
+
+	float scale = options::getOptionWithError(opts, "scaling_factor");
+	float probe = options::getOptionWithError(opts, "probe_radius");
+	float surface = options::getOptionWithError(opts, "surface");
+	int n_threads = options::getOption(opts, "filling_threads", 1);
+
 
 	AtomSpaceFiller filler;
 	am::math::Mat3D<GridPoint> volume = filler.buildVolume(atoms, opts);
-
+	opts["isovalue"] = 1;
 	if (surface == options::MS) {
+		opts["isovalue"] = probe * scale * probe * scale;
 
 		/*std::promise<am::Mat3D<float>> p;
 		auto f = p.get_future();
@@ -150,6 +146,8 @@ am::math::Mat3D<GridPoint> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom
 
 		std::vector<std::thread> threads;
 		std::vector<std::future<struct EDTSpaceFiller::Partial>> futures;
+
+		am::utils::Logger l("EDT");
 
 		int range = volume.depth() / n_threads;
 		for (int i = 0; i < n_threads; ++i) {
@@ -165,7 +163,7 @@ am::math::Mat3D<GridPoint> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom
 		}
 
 		am::math::Mat3D<float> tEDT(volume.width(), volume.height(), volume.depth(), -1);
-
+		
 		for (auto& f : futures) {
 			auto m = f.get();
 
@@ -177,7 +175,6 @@ am::math::Mat3D<GridPoint> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom
 				}
 			}
 		}
-
 
 		float MAX = INFINITY;
 		am::math::Mat3D<float> EDT(volume.width(), volume.height(), volume.depth(), MAX);
@@ -191,11 +188,11 @@ am::math::Mat3D<GridPoint> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom
 					}
 					if (x > 0 || y > 0 || z > 0)
 					{
-						float r; // = EDT.at(x - 1, y, z) + 1;
+						float r;
 
-						if (x > 0) r = EDT.at(x - 1, y, z) + 1;
-						else if (y > 0) r = EDT.at(x, y - 1, z) + 1;
-						else if (z > 0) r = EDT.at(x, y, z - 1) + 1;
+						if (x > 0) r = std::sqrt(EDT.at(x - 1, y, z)) + 1;
+						else if (y > 0) r = std::sqrt(EDT.at(x, y - 1, z)) + 1;
+						else if (z > 0) r = std::sqrt(EDT.at(x, y, z - 1)) + 1;
 
 						float value = MAX;
 						for (int j = 1; j <= r; j++) {
@@ -217,13 +214,14 @@ am::math::Mat3D<GridPoint> EDTSpaceFiller::buildVolume(std::vector<am::bio::Atom
 						}
 						EDT.at(x, y, z) = value;
 					}
-
-					if (EDT.at(x, y, z) < (probe * scale) * (probe * scale)) volume.at(x, y, z).value = 0;
-					else volume.at(x, y, z).value = 1;
+					volume.at(x, y, z).value = EDT.at(x, y, z);
+					//if (EDT.at(x, y, z) < (probe * scale) * (probe * scale)) volume.at(x, y, z).value = 0;
+					//else volume.at(x, y, z).value = 1;
 
 				}
 			}
 		}
 	}
+
 	return volume;
 }

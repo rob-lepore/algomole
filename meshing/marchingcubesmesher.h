@@ -12,11 +12,11 @@ public:
 
 private:
 
-    static int edgeTable[256];
+    //static int edgeTable[256];
     static int triTable[256][16];
 
-    inline glm::vec3 interpolate(glm::vec3 first, glm::vec3 second, float);
-    inline glm::vec4 getColor(GridPoint a, GridPoint b, int colorMode, float isovalue);
+    inline glm::vec3 interpolate(const glm::vec3& first, const glm::vec3& second, float);
+    inline glm::vec4 getColor(const GridPoint& a, const GridPoint& b, int colorMode, float isovalue);
 
     struct Vec3Hash {
         std::size_t operator()(const glm::vec3& v) const {
