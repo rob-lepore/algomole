@@ -12,8 +12,8 @@ am::math::Mat3D<am::pipeline::GridPoint> am::pipeline::GaussianSpaceFiller::buil
 	
 	am::math::Mat3D<am::pipeline::GridPoint> volume(size, size, size, { am::bio::Atom(glm::vec3(0), ' ', 0), 0 });
 
-	std::unordered_map<char, float> s_map;
-	std::unordered_map<char, float> sigma_map;
+	std::map<char, float> s_map;
+	std::map<char, float> sigma_map;
 
 	float ln2 = std::log(2);
 	for (const auto& atom : atoms)
@@ -32,7 +32,7 @@ am::math::Mat3D<am::pipeline::GridPoint> am::pipeline::GaussianSpaceFiller::buil
 			s_2 = 2.f * rp * rp + 2.f * r * rp - rp * std::sqrt(4 * (r + rp) * (r + rp) - d * d);
 			s_2 /= (2.f * ln2 * r * r);
 			s_map[atom.element] = s_2;
-			sigma = std::round(6 * std::sqrt(s_2) * r);
+			sigma = std::round(4.5 * std::sqrt(s_2) * r);
 			sigma_map[atom.element] = sigma;
 		}
 

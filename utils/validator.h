@@ -72,5 +72,6 @@ private:
 			std::string numericPart = log.substr(equalsPos);
 			return std::stod(numericPart);
 		}
+		
 	}
 };

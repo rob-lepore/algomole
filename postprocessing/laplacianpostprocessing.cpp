@@ -3,13 +3,9 @@
 #include "iostream"
 am::gfx::Mesh* am::pipeline::LaplacianPostprocessing::transform(am::gfx::Mesh* mesh, std::unordered_map<std::string, float>& opts)
 {
-	try {
-		options::assertOptionValue(opts, "normals", options::SMOOTH);
-	}
-	catch (std::exception& e) {
-		std::cout << e.what() << "\n";
-		return mesh;
-	}
+	
+	options::assertOptionValue(opts, "normals", options::SMOOTH);
+	
 	std::vector<am::gfx::Vertex> vertices = mesh->getVertices();
 	for (int i = 0; i < vertices.size(); i++) {
 		am::gfx::Vertex current = vertices[i];
