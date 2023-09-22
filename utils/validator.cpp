@@ -1,10 +1,14 @@
 #include "validator.h"
+#include "boost/filesystem.hpp"
 
 using namespace am::utils;
 
 Validator::Validator(std::string chimeraPath) {
 	m_chimera = chimeraPath;
 
+	if (!(boost::filesystem::exists("./validation"))) {
+		boost::filesystem::create_directory("./validation");
+	}
 	std::ofstream script("./validation/algomole-area.py");
 	script << "import chimera\nchimera.openModels.open(\"./validation/molecule.pdb\")\nchimera.runCommand(\"surface vertexDensity 1\")\nchimera.runCommand(\"select\")\nchimera.runCommand(\"measure area sel\")\nchimera.runCommand(\"stop now\")";
 	script.close();
