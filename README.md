@@ -57,29 +57,29 @@ Before you can use AlgoMole, ensure you have the following prerequisites install
     #include <algomole/postprocessing/laplacianpostprocessing.h>
     
     int main() {
-    		/* read PDB file */
-    		std::ifstream file("molecule.pdb");
-            std::string content((std::istreambuf_iterator<char>(file)),
-                std::istreambuf_iterator<char>());
-            file.close();
+        /* read PDB file */
+        std::ifstream file("molecule.pdb");
+        std::string content((std::istreambuf_iterator<char>(file)),
+            std::istreambuf_iterator<char>());
+        file.close();
 
 
-            using namespace am::pipeline;
-    		controller::SurfaceExtractorBuilder builder;
-    	    controller::SurfaceExtractor se = builder
-    		    .setFileParser(new PdbFileParser)
-    	        .setPreprocessing(new BoundingBoxPreprocessing)
-    	        .setSpaceFiller(new EDTSpaceFiller)
-    	        .setMeshBuilder(new MarchingCubesMesher)
-    	        .setPostprocessing(new LaplacianPostprocessing)
-    	        .setOption("size", 256)
-    	        .setOption("surface", options::MS)
-    	        .setOption("normals", options::SMOOTH)
-    			.build()
-    		
-    		am::gfx::Mesh* m = se.generateSurfaceMesh(content);
-    		m->toObjFile("molecule.obj");
-    	}
+        using namespace am::pipeline;
+        controller::SurfaceExtractorBuilder builder;
+        controller::SurfaceExtractor se = builder
+            .setFileParser(new PdbFileParser)
+            .setPreprocessing(new BoundingBoxPreprocessing)
+            .setSpaceFiller(new EDTSpaceFiller)
+            .setMeshBuilder(new MarchingCubesMesher)
+            .setPostprocessing(new LaplacianPostprocessing)
+            .setOption("size", 256)
+            .setOption("surface", options::MS)
+            .setOption("normals", options::SMOOTH)
+            .build()
+        
+        am::gfx::Mesh* m = se.generateSurfaceMesh(content);
+        m->toObjFile("molecule.obj");
+    }
 
 ### 2. Director and validation
 
