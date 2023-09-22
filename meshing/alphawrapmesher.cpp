@@ -45,4 +45,5 @@ am::gfx::Mesh* AlphaWrapMesher::buildMesh(am::math::Mat3D<am::pipeline::GridPoin
     CGAL::alpha_wrap_3(points, alpha, offset, wrap);
 
     return am::utils::CgalUtils::convertFromCGALMesh(wrap);
+    
 }

@@ -5,6 +5,7 @@
 #include "../meshing/marchingcubesmesher.h"
 #include "../spacefilling/gaussianspacefiller.h"
 #include "../postprocessing/laplacianpostprocessing.h"
+#include "../spacefilling/edtspacefiller.h"
 
 void am::pipeline::controller::Director::make(SurfaceExtractorBuilder& builder, Type t)
 {
@@ -18,10 +19,17 @@ void am::pipeline::controller::Director::make(SurfaceExtractorBuilder& builder, 
 			.setPostprocessing(new LaplacianPostprocessing)
 			.setOption("size", 256)
 			.setOption("surface", options::VDWS)
-			.setOption("color_mode", options::MONO)
 			.build();
 		break;
 	case am::pipeline::controller::Director::EDT:
+		builder.setFileParser(new PdbFileParser)
+			.setPreprocessing(new BoundingBoxPreprocessing)
+			.setSpaceFiller(new EDTSpaceFiller)
+			.setMeshBuilder(new MarchingCubesMesher)
+			.setPostprocessing(new LaplacianPostprocessing)
+			.setOption("size", 256)
+			.setOption("surface", options::MS)
+			.build();
 		break;
 	default:
 		break;

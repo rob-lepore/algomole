@@ -93,7 +93,7 @@ void am::gfx::Mesh::recalculateNormals()
     }
 
     for (size_t i = 0; i < m_vertices.size(); ++i) {
-        m_vertices[i].normal = glm::normalize(vertexNormals[i]);
+        m_vertices[i].normal = glm::vec4(glm::normalize(glm::vec3(vertexNormals[i])),1);
     }
 
 }

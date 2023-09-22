@@ -1,6 +1,11 @@
 #include "gaussianspacefiller.h"
 #include "../exceptions/optionexception.h"
 #include <iostream>
+
+double distance(glm::vec3 a, glm::vec3 b) {
+	return (a.x - b.x) * (a.x - b.x) + (a.y - b.y)* (a.y - b.y) + (a.z - b.z)* (a.z - b.z);
+}
+
 am::math::Mat3D<am::pipeline::GridPoint> am::pipeline::GaussianSpaceFiller::buildVolume(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts)
 {
 	int size;
@@ -46,12 +51,16 @@ am::math::Mat3D<am::pipeline::GridPoint> am::pipeline::GaussianSpaceFiller::buil
 						float dist = (c.x - x) * (c.x - x) + (c.y - y) * (c.y - y) + (c.z - z) * (c.z - z);
 						float eta = std::exp(-dist / (2 * s_2 * r * r) + 1 / (2 * s_2));
 						volume.at(x, y, z).value += eta;
-						volume.at(x, y, z).atom = am::bio::Atom(atom.position, atom.element, atom.radius, atom.chainId);
+
+						glm::vec3 point = { x,y,z };
+						if (distance(glm::vec3(x, y, z), volume.at(x, y, z).atom.position) > distance(glm::vec3(x, y, z), c) || volume.at(x, y, z).atom.element == ' ')
+							volume.at(x, y, z).atom = am::bio::Atom(c, atom.element, atom.radius, atom.chainId);
 					}
 				}
 			}
 		}
 	}
+
 
 	opts["isovalue"] = 1.f;
 

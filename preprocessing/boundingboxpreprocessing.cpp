@@ -1,5 +1,6 @@
 #include "boundingboxpreprocessing.h"
 #include "../exceptions/optionexception.h"
+#include "glm/gtx/string_cast.hpp"
 using namespace am::pipeline;
 
 std::vector<am::bio::Atom> BoundingBoxPreprocessing::transform(std::vector<am::bio::Atom> atoms, std::unordered_map<std::string, float>& opts) {
@@ -43,7 +44,7 @@ std::vector<am::bio::Atom> BoundingBoxPreprocessing::transform(std::vector<am::b
 	glm::vec3 centroid = (maxValues + minValues) / 2.0f;
 
 	if (opts["log"] == options::VERBOSE)
-		log.log("Scaling factor: " + std::to_string(scaleFactor) + "  Centroid: " + log.vec3(centroid) + "  Space size: " + std::to_string(size));
+		log.log("Scaling factor: " + std::to_string(scaleFactor) + "  Centroid: " + glm::to_string(centroid) + "  Space size: " + std::to_string(size));
 
 	std::vector<am::bio::Atom> scaled;
 	for (const auto& a : atoms) {

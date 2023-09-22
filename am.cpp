@@ -30,7 +30,10 @@ float am::pipeline::options::getOptionWithError(std::unordered_map<std::string, 
 }
 
 void am::pipeline::options::assertOptionValue(std::unordered_map<std::string, float>& options, std::string key, float value){
-	if (options.find(key) == options.end() || options[key] != value) {
+	if (options.find(key) == options.end()) {
+		throw MissingOptionException(key);
+	}
+	if (options[key] != value) {
 		throw InvalidOptionException(key, value);
 	}
 }

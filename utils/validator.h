@@ -4,74 +4,61 @@
 #include <iostream>
 #include "../gfx/mesh.h"
 
-
-
-
+/**
+ * @brief The Validator class provides functionality for validating mesh properties
+ *        against analytical calculations.
+ * 
+ * The Validator class provides functionality for validating mesh properties
+ * against analytical calculations. The correct analytical values are calculated by calling
+ * the UCSF Chimera software. In the project directory will be created a validation folder containing
+ * scripts and log files.
+ */
 class am::utils::Validator
 {
 public:
-	Validator(std::string chimeraPath) {
-		m_chimera = chimeraPath;
+	/**
+	 * @brief Constructor for the Validator class.
+	 *
+	 * @param chimeraPath The path to the Chimera software executable.
+	 */
+	Validator(std::string chimeraPath);
 
-		std::ofstream script("./validation/algomole-area.py");
-		script << "import chimera\nchimera.openModels.open(\"./validation/molecule.pdb\")\nchimera.runCommand(\"surface vertexDensity 1\")\nchimera.runCommand(\"select\")\nchimera.runCommand(\"measure area sel\")\nchimera.runCommand(\"stop now\")";
-		script.close();
+	/**
+	 * @brief Computes the relative error in the mesh's surface area.
+	 *
+	 * @param pdb Content of the PDB (Protein Data Bank) file.
+	 * @param m A pointer to the Mesh object representing the mesh.
+	 * @return The relative error in surface area.
+	 */
+	double areaRelativeError(std::string pdb, am::gfx::Mesh* m);
 
-		std::ofstream script2("./validation/algomole-volume.py");
-		script2 << "import chimera\nchimera.openModels.open(\"./validation/molecule.pdb\")\nchimera.runCommand(\"surface vertexDensity 1\")\nchimera.runCommand(\"select\")\nchimera.runCommand(\"measure volume sel\")\nchimera.runCommand(\"stop now\")";
-		script2.close();
-	}
+	/**
+	 * @brief Computes the analytical surface area of a molecular structure from a PDB file.
+	 *
+	 * @param pdb Content of the PDB (Protein Data Bank) file.
+	 * @return The analytical surface area.
+	 */
+	double analyticalSurfaceArea(std::string pdb);
 
-	double areaRelativeError(std::string pdb, am::gfx::Mesh* m) {
-		double exact = analyticalSurfaceArea(pdb);
-		return std::abs(exact - m->surfaceArea()) / exact;
-	}
+	/**
+	 * @brief Computes the relative error in the mesh's volume.
+	 *
+	 * @param pdb Content of the PDB (Protein Data Bank) file.
+	 * @param m A pointer to the Mesh object representing the mesh.
+	 * @return The relative error in volume.
+	 */
+	double volumeRelativeError(std::string pdb, am::gfx::Mesh* m);
 
-	double analyticalSurfaceArea(std::string pdb) {
-		std::ofstream molecule("./validation/molecule.pdb");
-		molecule << pdb;
-		molecule.close();
-
-		std::string command = "\"" + m_chimera + "/chimera\" --nogui --script ./validation/algomole-area.py > ./validation/log.txt";
-		system(command.c_str());
-		return getValue(0);
-	}
-
-	double volumeRelativeError(std::string pdb, am::gfx::Mesh* m) {
-		double exact = analyticalVolume(pdb);
-		return std::abs(exact - m->volume()) / exact;
-	}
-
-	double analyticalVolume(std::string pdb) {
-		std::ofstream molecule("./validation/molecule.pdb");
-		molecule << pdb;
-		molecule.close();
-
-		std::string command = "\"" + m_chimera + "/chimera\" --nogui --script ./validation/algomole-volume.py > ./validation/log.txt";
-		system(command.c_str());
-		return getValue(1);
-	}
+	/**
+	 * @brief Computes the analytical volume of a molecular structure from a PDB file.
+	 *
+	 * @param pdb Content of the PDB (Protein Data Bank) file.
+	 * @return The analytical volume.
+	 */
+	double analyticalVolume(std::string pdb);
 
 private:
 	std::string m_chimera;
 
-	double getValue(int what) {
-		std::ifstream logFile("./validation/log.txt");
-		std::string log((std::istreambuf_iterator<char>(logFile)),
-			std::istreambuf_iterator<char>());
-		logFile.close();
-		if (what == 0) {
-			std::size_t found = log.find("MSMS main surface of molecule.pdb:  area = ");
-			std::size_t equalsPos = found + sizeof("MSMS main surface of molecule.pdb:  area = ") - 1;
-			std::string numericPart = log.substr(equalsPos);
-			return std::stod(numericPart);
-		}
-		else {
-			std::size_t found = log.find("MSMS main surface of molecule.pdb:  volume = ");
-			std::size_t equalsPos = found + sizeof("MSMS main surface of molecule.pdb:  volume = ") - 1;
-			std::string numericPart = log.substr(equalsPos);
-			return std::stod(numericPart);
-		}
-		
-	}
+	double getValue(int what);
 };

@@ -1,18 +1,15 @@
 #include "Logger.h"
-
+#include "glm/gtx/string_cast.hpp"
 using namespace am::utils;
 
-Logger::Logger(std::string activity) {
-	m_activity = activity;
+Logger::Logger(std::string activity, std::ostream& outputStream) : m_activity(activity), m_out(outputStream) {
+	
 }
 
 void Logger::log(std::string msg, std::string end) {
-	std::cout << "[" << m_activity << "]  " << msg << end;
+	m_out << "[" << m_activity << "]  " << msg << end;
 }
 
-std::string Logger::vec3(glm::vec3 v) {
-	return "(" + std::to_string(v.x) + " " + std::to_string(v.y) + " " + std::to_string(v.z) + ")";
-}
 
 void Logger::startTimer() {
 	m_start = std::chrono::high_resolution_clock::now();
