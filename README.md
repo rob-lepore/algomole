@@ -28,7 +28,8 @@ Before you can use AlgoMole, ensure you have the following prerequisites install
 -   C++ Compiler
 -   [GLM](https://github.com/g-truc/glm) Library
 -   [CGAL](https://www.cgal.org/) Library (optional)
--   [UCSF Chimera](https://www.cgl.ucsf.edu/chimera/) (optional)
+-   [Boost](https://www.boost.org/doc/libs/1_83_0/index.html) Library (optional, only for validation)
+-   [UCSF Chimera](https://www.cgl.ucsf.edu/chimera/) (optional, only for validation)
 
 ### Installation steps
 
@@ -75,7 +76,7 @@ Before you can use AlgoMole, ensure you have the following prerequisites install
             .setOption("size", 256)
             .setOption("surface", options::MS)
             .setOption("normals", options::SMOOTH)
-            .build()
+            .build();
         
         am::gfx::Mesh* m = se.generateSurfaceMesh(content);
         m->toObjFile("molecule.obj");
@@ -99,7 +100,7 @@ Before you can use AlgoMole, ensure you have the following prerequisites install
        using namespace am::pipeline::controller;
        SurfaceExtractorBuilder builder;
        Director director;
-       director.make(Director::Type::GAUSSIAN);
+       director.make(builder, Director::Type::GAUSSIAN);
        SurfaceExtractor se = builder.build();
        am::gfx::Mesh* m = se.generateSurfaceMesh(content);
        std::cout << "Area relative error: " << validator.areaRelativeError(content, m) * 100. << "%\n"; 
