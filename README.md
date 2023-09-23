@@ -20,7 +20,6 @@ Here's an overview of the components in AlgoMole's pipeline architecture:
 Before you can use AlgoMole, you must have the following prerequisites installed on your system:
 
 -   Visual Studio
--   [GLM](https://github.com/g-truc/glm) Library
 -   [CGAL](https://www.cgal.org/) Library (optional)
 -   [Boost](https://www.boost.org/doc/libs/1_83_0/index.html) Library (optional, only for validation)
 -   [UCSF Chimera](https://www.cgl.ucsf.edu/chimera/) (optional, only for validation)
