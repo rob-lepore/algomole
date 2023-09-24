@@ -35,7 +35,7 @@ Before you can use AlgoMole, you must have the following prerequisites installed
 ## Examples
 
 ### 1. Export a molecular surface as OBJ file
-```c++
+```cpp
 #include <algomole/controller/surfaceextractorbuilder.h>
 #include <algomole/parsing/pdbfileparser.h>
 #include <algomole/preprocessing/boundingboxpreprocessing.h>
@@ -69,7 +69,7 @@ int main() {
 ```
 ### 2. Director and validation
 
-```c++
+```cpp
 #include <algomole/controller/director.h>
 #include <algomole/utils/validator.h>
 #include <iostream>
