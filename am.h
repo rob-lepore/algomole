@@ -64,17 +64,12 @@ namespace am{
         class Mesh;
 
         /**
-         * @brief Constructs a Vertex object with specified position and color.
-         *
-         * The normal vector is initialized to (0,0,0,0).
-         *
-         * @param pos The position of the vertex in homogeneous coordinates.
-         * @param col The color of the vertex.
+         * @brief The Vertex struct represents vertex data in a mesh, including position, color, and normal vectors.
          */
         typedef struct Vertex {
-            glm::vec4 position;
-            glm::vec4 color;
-            glm::vec4 normal;
+            glm::vec4 position; /**< The position vector of the vertex. */
+            glm::vec4 color; /**< The RGBA color vector of the vertex. */
+            glm::vec4 normal; /**< The normal vector of the vertex. */
             /**
              * @brief Constructs a Vertex object with specified position and color.
              *
